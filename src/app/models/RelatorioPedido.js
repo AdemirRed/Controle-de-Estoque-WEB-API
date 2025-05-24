@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 class RelatorioPedido extends Model {
   static init(sequelize) {
@@ -7,6 +8,7 @@ class RelatorioPedido extends Model {
         id: {
           type: Sequelize.UUID,
           primaryKey: true,
+          defaultValue: () => uuidv4(),
         },
         usuario_id: Sequelize.UUID,
         periodo_inicio: Sequelize.DATE,

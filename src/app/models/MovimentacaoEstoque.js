@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 class MovimentacaoEstoque extends Model {
   static init(sequelize) {
@@ -7,6 +8,7 @@ class MovimentacaoEstoque extends Model {
         id: {
           type: Sequelize.UUID,
           primaryKey: true,
+          defaultValue: () => uuidv4(),
         },
         item_id: Sequelize.UUID,
         tipo: Sequelize.ENUM('entrada', 'saida'),

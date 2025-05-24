@@ -32,23 +32,23 @@ routes.use(authMiddleware);
 
 // Rotas protegidas
 
-// Usuários
+// Usuários (todas as operações de usuário restritas a admin)
 routes.get('/usuarios', isAdmin, UserController.index); // [GET] Listar todos os usuários (admin)
-routes.get('/usuarios/:id',  UserController.show); // [GET] Detalhar usuário
+routes.get('/usuarios/:id', isAdmin, UserController.show); // [GET] Detalhar usuário
 
-// Categorias
+// Categorias (criação, atualização e remoção restritas a admin)
 routes.get('/categorias', CategoriaController.index); // [GET] Listar categorias
 routes.get('/categorias/:id', CategoriaController.show); // [GET] Detalhar categoria
-routes.post('/categorias', CategoriaController.store); // [POST] Criar categoria
-routes.put('/categorias/:id', CategoriaController.update); // [PUT] Atualizar categoria
-routes.delete('/categorias/:id', CategoriaController.delete); // [DELETE] Remover categoria
+routes.post('/categorias', isAdmin, CategoriaController.store); // [POST] Criar categoria
+routes.put('/categorias/:id', isAdmin, CategoriaController.update); // [PUT] Atualizar categoria
+routes.delete('/categorias/:id', isAdmin, CategoriaController.delete); // [DELETE] Remover categoria
 
-// Fornecedores
+// Fornecedores (criação, atualização e remoção restritas a admin)
 routes.get('/fornecedores', FornecedorController.index); // [GET] Listar fornecedores
 routes.get('/fornecedores/:id', FornecedorController.show); // [GET] Detalhar fornecedor
-routes.post('/fornecedores', FornecedorController.store); // [POST] Criar fornecedor
-routes.put('/fornecedores/:id', FornecedorController.update); // [PUT] Atualizar fornecedor
-routes.delete('/fornecedores/:id', FornecedorController.delete); // [DELETE] Remover fornecedor
+routes.post('/fornecedores', isAdmin, FornecedorController.store); // [POST] Criar fornecedor
+routes.put('/fornecedores/:id', isAdmin, FornecedorController.update); // [PUT] Atualizar fornecedor
+routes.delete('/fornecedores/:id', isAdmin, FornecedorController.delete); // [DELETE] Remover fornecedor
 
 // Itens
 routes.get('/itens', ItemController.index); // [GET] Listar itens
@@ -57,12 +57,12 @@ routes.post('/itens', ItemController.store); // [POST] Criar item
 routes.put('/itens/:id', ItemController.update); // [PUT] Atualizar item
 routes.delete('/itens/:id', ItemController.delete); // [DELETE] Remover item
 
-// Unidades de Medida
+// Unidades de Medida (todas as operações restritas a admin)
 routes.get('/unidades-medida', UnidadeMedidaController.index); // [GET] Listar unidades de medida
 routes.get('/unidades-medida/:id', UnidadeMedidaController.show); // [GET] Detalhar unidade de medida
-routes.post('/unidades-medida', UnidadeMedidaController.store); // [POST] Criar unidade de medida
-routes.put('/unidades-medida/:id', UnidadeMedidaController.update); // [PUT] Atualizar unidade de medida
-routes.delete('/unidades-medida/:id', UnidadeMedidaController.delete); // [DELETE] Remover unidade de medida
+routes.post('/unidades-medida', isAdmin, UnidadeMedidaController.store); // [POST] Criar unidade de medida
+routes.put('/unidades-medida/:id', isAdmin, UnidadeMedidaController.update); // [PUT] Atualizar unidade de medida
+routes.delete('/unidades-medida/:id', isAdmin, UnidadeMedidaController.delete); // [DELETE] Remover unidade de medida
 
 // Pedidos
 routes.get('/pedidos', PedidoController.index); // [GET] Listar pedidos
@@ -79,11 +79,11 @@ routes.post('/movimentacoes-estoque', MovimentacaoEstoqueController.store); // [
 routes.put('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.update); // [PUT] Atualizar movimentação de estoque
 routes.delete('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.delete); // [DELETE] Remover movimentação de estoque
 
-// Relatórios de Pedido
-routes.get('/relatorios-pedidos', RelatorioPedidoController.index); // [GET] Listar relatórios de pedidos
-routes.get('/relatorios-pedidos/:id', RelatorioPedidoController.show); // [GET] Detalhar relatório de pedido
-routes.post('/relatorios-pedidos', RelatorioPedidoController.store); // [POST] Criar relatório de pedido
-routes.put('/relatorios-pedidos/:id', RelatorioPedidoController.update); // [PUT] Atualizar relatório de pedido
-routes.delete('/relatorios-pedidos/:id', RelatorioPedidoController.delete); // [DELETE] Remover relatório de pedido
+// Relatórios de Pedido (todas as operações restritas a admin)
+routes.get('/relatorios-pedidos', isAdmin, RelatorioPedidoController.index); // [GET] Listar relatórios de pedidos
+routes.get('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.show); // [GET] Detalhar relatório de pedido
+routes.post('/relatorios-pedidos', isAdmin, RelatorioPedidoController.store); // [POST] Criar relatório de pedido
+routes.put('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.update); // [PUT] Atualizar relatório de pedido
+routes.delete('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.delete); // [DELETE] Remover relatório de pedido
 
 export default routes;
