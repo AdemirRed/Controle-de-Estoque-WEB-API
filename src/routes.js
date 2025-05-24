@@ -70,6 +70,7 @@ routes.get('/pedidos/:id', PedidoController.show); // [GET] Detalhar pedido
 routes.post('/pedidos', PedidoController.store); // [POST] Criar pedido
 routes.put('/pedidos/:id', PedidoController.update); // [PUT] Atualizar pedido
 routes.delete('/pedidos/:id', PedidoController.delete); // [DELETE] Remover pedido
+routes.put('/pedidos/:id/aprovar', PedidoController.aprovar); //[PUT] Atualizar pedido
 
 // Movimentações de Estoque
 routes.get('/movimentacoes-estoque', MovimentacaoEstoqueController.index); // [GET] Listar movimentações de estoque
