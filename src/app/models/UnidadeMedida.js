@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 class UnidadeMedida extends Model {
   static init(sequelize) {
@@ -7,6 +8,7 @@ class UnidadeMedida extends Model {
         id: {
           type: Sequelize.UUID,
           primaryKey: true,
+          defaultValue: () => uuidv4(),
         },
         nome: Sequelize.STRING,
         sigla: Sequelize.STRING,
