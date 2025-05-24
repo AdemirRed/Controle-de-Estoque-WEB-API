@@ -15,13 +15,14 @@ export default async (req, res, next) => {
   try {
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-    // Adiciona os dados do usuário ao objeto req
-    req.user = {
-      id: decoded.id,
-      usuario_id: decoded.usuario_id, // Certifique-se de que o token contém `usuario_id`
-      papel: decoded.papel, // Adiciona o papel do usuário (admin ou usuário)
-      nome: decoded.nome, // Adiciona o nome do usuário
-    };
+    // Simplifica a extração dos dados do token
+    req.userId = decoded.id;
+    req.userRole = decoded.papel;
+    req.userName = decoded.nome;
+
+    if (!req.userId) {
+      return res.status(401).json({ erro: 'Token inválido - ID não encontrado.' });
+    }
 
     return next();
   } catch (error) {

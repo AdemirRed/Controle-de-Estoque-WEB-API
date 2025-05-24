@@ -4,7 +4,7 @@ import Pedido from '../models/Pedido.js';
 import UnidadeMedida from '../models/UnidadeMedida.js';
 import Usuario from '../models/users.js';
 
- 
+
 /* eslint-disable no-unused-vars */
 /**
  * Controller para gerenciamento de pedidos
@@ -388,7 +388,12 @@ class PedidoController {
 
       return res.json(pedidoAprovado);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(500).json({
+        status: 'error',
+        code: 'APPROVAL_ERROR',
+        message: 'Erro ao aprovar pedido',
+        details: error.message
+      });
     }
   }
 
@@ -424,7 +429,12 @@ class PedidoController {
 
       return res.json(pedido);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(500).json({
+        status: 'error',
+        code: 'REJECTION_ERROR',
+        message: 'Erro ao rejeitar pedido',
+        details: error.message
+      });
     }
   }
 

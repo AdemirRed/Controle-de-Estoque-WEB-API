@@ -32,7 +32,12 @@ class ItemController {
       const item = await Item.create(req.body);
       return res.status(201).json(item);
     } catch (error) {
-      return res.status(400).json({ erro: 'Erro ao criar item', detalhes: error.message });
+      return res.status(400).json({
+        status: 'error',
+        code: 'ITEM_CREATION_ERROR',
+        message: 'Erro ao criar item',
+        details: error.message
+      });
     }
   }
 
@@ -86,9 +91,11 @@ class ItemController {
       return res.json(item);
     } catch (error) {
       console.error(error); // Log para debug
-      return res.status(500).json({ 
-        error: 'Erro ao atualizar item',
-        message: error.message 
+      return res.status(500).json({
+        status: 'error',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Erro ao atualizar item',
+        details: error.message
       });
     }
   }

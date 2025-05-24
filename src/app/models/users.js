@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import bcrypt from 'bcryptjs';
 
 class User extends Model {
   static init(sequelize) {
@@ -32,9 +33,13 @@ class User extends Model {
         timestamps: true,
       },
     );
+
+    return this;
   }
 
-  
+  checkPassword(password) {
+    return bcrypt.compare(password, this.senha_hash);
+  }
 }
 
 export default User;

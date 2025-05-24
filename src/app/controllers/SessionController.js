@@ -1,45 +1,33 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
-import authConfig from '../../config/auth';
-import User from '../models/users';
-
-// Schema de validação de login
-const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('O formato do e-mail é inválido')
-    .required('O e-mail é obrigatório'),
-  senha_hash: Yup.string()
-    .required('A senha é obrigatória')
-    .min(6, 'A senha deve ter pelo menos 6 caracteres'),
-});
+import authConfig from '../../config/auth.js';
+import User from '../models/users.js';
 
 class SessionController {
   async store(req, res) {
-    // Validação dos dados de login
     try {
-      await loginSchema.validate(req.body, { abortEarly: false });
-    } catch (error) {
-      if (error.name === 'ValidationError') {
-        // Verifica se há erro de mínimo de caracteres na senha
-        const minError = error.inner.find(
-          (err) => err.path === 'senha_hash' && err.type === 'min',
-        );
-        if (minError) {
-          return res.status(400).json({ erro: minError.message });
-        }
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email('Email inválido')
+          .required('Email é obrigatório'),
+        senha_hash: Yup.string()
+          .required('Senha é obrigatória')
+      });
+
+      if (!(await schema.isValid(req.body))) {
+        return res.status(400).json({ erro: 'Falha na validação' });
       }
-      // Mensagem genérica para falha de autenticação
-      return res.status(400).json({ erro: 'Usuário ou senha incorretos' });
-    }
 
-    const { email, senha_hash } = req.body;
+      const { email, senha_hash } = req.body;
 
-    try {
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ 
+        where: { email },
+        raw: false 
+      });
 
       if (!user) {
-        return res.status(401).json({ erro: 'Usuário ou senha incorretos' });
+        return res.status(401).json({ erro: 'Usuário não encontrado' });
       }
 
       const senhaValida = await bcrypt.compare(senha_hash, user.senha_hash);
@@ -50,9 +38,13 @@ class SessionController {
 
       const { id, nome, papel } = user;
 
-      // Criação do token JWT
+      // Simplificar a estrutura do token
       const token = jwt.sign(
-        { id, papel, usuario_id: id, nome },
+        { 
+          id,  // Usar apenas id como identificador principal
+          nome,
+          papel
+        },
         authConfig.secret,
         { expiresIn: authConfig.expiresIn }
       );
@@ -64,7 +56,10 @@ class SessionController {
       });
     } catch (error) {
       console.error('Erro na autenticação:', error);
-      return res.status(500).json({ erro: 'Erro interno do servidor.' });
+      return res.status(500).json({ 
+        erro: 'Erro interno do servidor',
+        detalhes: error.message 
+      });
     }
   }
 }

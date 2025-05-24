@@ -49,7 +49,12 @@ class CategoriaController {
       const { nome, descricao } = req.body;
 
       if (!nome) {
-        return res.status(400).json({ error: 'Nome é obrigatório' });
+        return res.status(400).json({
+          status: 'error',
+          code: 'MISSING_REQUIRED_FIELD',
+          message: 'Nome é obrigatório',
+          field: 'nome'
+        });
       }
 
       const categoria = await Categoria.create({
@@ -59,7 +64,12 @@ class CategoriaController {
 
       return res.status(201).json(categoria);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao criar categoria' });
+      return res.status(500).json({
+        status: 'error',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Erro ao criar categoria',
+        details: error.message
+      });
     }
   }
 
