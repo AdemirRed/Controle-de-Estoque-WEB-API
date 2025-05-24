@@ -51,6 +51,14 @@ class Item extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.hasMany(models.MovimentacaoEstoque, {
+      foreignKey: 'item_id',
+      as: 'movimentacoes'
+    });
+    // ...manter outras associações existentes se houver...
+  }
 }
 
 export default Item;

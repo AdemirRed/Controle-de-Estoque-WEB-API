@@ -26,6 +26,13 @@ class MovimentacaoEstoque extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.belongsTo(models.Item, {
+      foreignKey: 'item_id',
+      as: 'item'
+    });
+  }
 }
 
 export default MovimentacaoEstoque;

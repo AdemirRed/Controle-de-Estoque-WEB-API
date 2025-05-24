@@ -16,7 +16,8 @@ class MovimentacaoEstoqueController {
       const movimentacoes = await MovimentacaoEstoque.findAll({
         include: [{
           model: Item,
-          attributes: ['nome', 'codigo']
+          as: 'item',
+          attributes: ['nome', 'descricao', 'quantidade', 'preco'] // Removido 'codigo' e adicionado outros campos relevantes
         }],
         order: [['data_movimentacao', 'DESC']]
       });
@@ -42,7 +43,8 @@ class MovimentacaoEstoqueController {
       const movimentacao = await MovimentacaoEstoque.findByPk(id, {
         include: [{
           model: Item,
-          attributes: ['nome', 'codigo']
+          as: 'item',
+          attributes: ['nome', 'descricao', 'quantidade', 'preco'] // Ajustado aqui também
         }]
       });
 
@@ -189,49 +191,7 @@ class MovimentacaoEstoqueController {
     }
   }
 
-  /**
-   * Atualiza uma movimentação de estoque existente
-   */
-  async update(req, res) {
-    try {
-      const { id } = req.params;
-      
-      const schema = Yup.object().shape({
-        observacao: Yup.string().required()
-      });
-
-      if (!(await schema.isValid(req.body))) {
-        return res.status(400).json({
-          status: 'error',
-          code: 'VALIDATION_ERROR',
-          message: 'Dados inválidos para atualização'
-        });
-      }
-
-      const movimentacao = await MovimentacaoEstoque.findByPk(id);
-
-      if (!movimentacao) {
-        return res.status(404).json({
-          status: 'error',
-          code: 'MOVEMENT_NOT_FOUND',
-          message: 'Movimentação não encontrada'
-        });
-      }
-
-      // Permite apenas atualização da observação
-      const { observacao } = req.body;
-      await movimentacao.update({ observacao });
-
-      return res.json(movimentacao);
-    } catch (error) {
-      return res.status(500).json({
-        status: 'error',
-        code: 'UPDATE_MOVEMENT_ERROR',
-        message: 'Erro ao atualizar movimentação',
-        details: { reason: error.message }
-      });
-    }
-  }
+  // Método update removido pois não deve ser permitido alterar movimentações
 
   /**
    * Remove uma movimentação de estoque do sistema

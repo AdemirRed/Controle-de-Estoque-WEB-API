@@ -76,7 +76,7 @@ routes.put('/pedidos/:id/aprovar', PedidoController.aprovar); //[PUT] Atualizar 
 routes.get('/movimentacoes-estoque', MovimentacaoEstoqueController.index); // [GET] Listar movimentações de estoque
 routes.get('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.show); // [GET] Detalhar movimentação de estoque
 routes.post('/movimentacoes-estoque', MovimentacaoEstoqueController.store); // [POST] Criar movimentação de estoque
-routes.put('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.update); // [PUT] Atualizar movimentação de estoque
+// routes.put('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.update); // Removida rota de atualização
 routes.delete('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.delete); // [DELETE] Remover movimentação de estoque
 
 // Relatórios de Pedido (todas as operações restritas a admin)
