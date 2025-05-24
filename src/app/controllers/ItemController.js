@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+ 
+import * as Yup from 'yup';
 import Item from '../models/Item.js';
 
 /**
@@ -37,10 +40,57 @@ class ItemController {
    * Atualiza um item existente
    */
   async update(req, res) {
-    const item = await Item.findByPk(req.params.id);
-    if (!item) return res.status(404).json({ erro: 'Item não encontrado' });
-    await item.update(req.body);
-    return res.json(item);
+    try {
+      // Campos permitidos para atualização (quantidade NÃO está inclusa)
+      const schema = Yup.object().shape({
+        nome: Yup.string().trim(),
+        descricao: Yup.string().trim().nullable(),
+        preco: Yup.number().transform((value) => 
+          isNaN(value) || value === '' ? undefined : value
+        ).nullable(),
+        categoria_id: Yup.string().uuid().nullable(),
+        fornecedor_id: Yup.string().uuid().nullable(),
+      });
+
+      if (!(await schema.isValid(req.body))) {
+        return res.status(400).json({ error: 'Dados inválidos' });
+      }
+
+      const item = await Item.findByPk(req.params.id);
+      
+      if (!item) {
+        return res.status(404).json({ error: 'Item não encontrado' });
+      }
+
+      // Remove campos não permitidos e campos vazios
+      const dadosAtualizacao = Object.fromEntries(
+        Object.entries(req.body)
+          .filter(([key, value]) => {
+            // Ignora explicitamente o campo quantidade
+            if (key === 'quantidade') {
+              return false;
+            }
+            return value !== '' && value !== undefined;
+          })
+      );
+
+      // Se tentarem atualizar quantidade, retorna erro
+      if (req.body.quantidade !== undefined) {
+        return res.status(400).json({ 
+          error: 'Não é possível atualizar quantidade diretamente. Use a rota de movimentação de estoque.'
+        });
+      }
+
+      await item.update(dadosAtualizacao);
+
+      return res.json(item);
+    } catch (error) {
+      console.error(error); // Log para debug
+      return res.status(500).json({ 
+        error: 'Erro ao atualizar item',
+        message: error.message 
+      });
+    }
   }
 
   /**
