@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: onnmoveis
+    environment:
+      POSTGRES_USER: onnmoveis
+      POSTGRES_PASSWORD: onnmoveis
+    ports:
+      - '5432:5432'
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
