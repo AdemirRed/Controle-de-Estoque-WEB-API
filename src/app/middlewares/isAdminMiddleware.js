@@ -1,28 +1,13 @@
-import User from '../models/users';
+/* eslint-disable no-unused-vars */
 
-const isAdmin = async (req, res, next) => {
-  if (!req.user || !req.user.id) {
-    return res
-      .status(403)
-      .json({ erro: 'Acesso negado. Usuário não autenticado.' });
-  }
-
-  const userId = req.user.id; // Captura o ID do usuário autenticado
-
+export default async (req, res, next) => {
   try {
-    const user = await User.findByPk(userId);
-
-    if (!user || user.papel !== 'admin') {
-      return res.status(403).json({
-        erro: 'Acesso negado: você não tem permissões de administrador.',
-      });
+    if (req.userRole !== 'admin') {
+      return res.status(403).json({ erro: 'Acesso permitido apenas para administradores.' });
     }
 
-    next();
+    return next();
   } catch (error) {
-    console.error('Erro ao verificar administrador:', error);
-    return res.status(500).json({ erro: 'Erro ao verificar permissões.' });
+    return res.status(500).json({ erro: 'Erro ao verificar permissões de administrador.' });
   }
 };
-
-export default isAdmin;

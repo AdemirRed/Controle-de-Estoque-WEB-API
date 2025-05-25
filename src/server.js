@@ -1,16 +1,29 @@
 require('dotenv').config(); // Carrega variáveis do .env
+import cors from 'cors';
 import { WebSocketServer } from 'ws'; // Importa WebSocketServer
 import app from './app.js'; // Importa a aplicação
-import cors from 'cors';
 
 const port = process.env.PORT || 3001;
 const host = process.env.HOST || '0.0.0.0'; // Fallback para qualquer interface
 
+const allowedOrigins = [
+  'http://192.168.0.200:2002',
+  'http://192.168.0.200:3001',
+  'http://localhost:2002'
+];
+
 // Configuração do CORS
 app.use(cors({
-  origin: '*', // Permite qualquer origem
-  methods: ['GET', 'POST', 'PATCH'], // Permite apenas os métodos necessários, incluindo PATCH
-  allowedHeaders: ['Content-Type', 'Authorization'], // Permite os cabeçalhos necessários
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Não permitido pelo CORS'));
+    }
+  },
+  credentials: true, // Necessário se você estiver enviando cookies ou autenticação
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'] // Headers permitidos
 }));
 
 const wsPort = process.env.PORT_SERVER || 3002; // Usa a porta do .env ou fallback para 3002
@@ -50,6 +63,7 @@ wss.on('connection', (ws, req) => {
     ws.send('Message received');
   });
 
+
   // Fecha a conexão WebSocket quando o cliente desconectar
   ws.on('close', () => {
     console.log('WebSocket connection closed');
@@ -58,6 +72,6 @@ wss.on('connection', (ws, req) => {
 
 // Inicia o servidor Express
 app.listen(port, host, () => {
-  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
-  console.log(`🚀 Server running at http://${displayHost}:${port}`);
+  const displayHost = host === '0.0.0.0' ? '192.168.0.200' : host ;
+  console.log(`Server running at http://${displayHost}:${port}`);
 });

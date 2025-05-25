@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
  
 import * as Yup from 'yup';
 import Item from '../models/Item.js';
@@ -11,8 +11,13 @@ class ItemController {
    * Lista todos os itens cadastrados
    */
   async index(req, res) {
-    const itens = await Item.findAll();
-    return res.json(itens);
+    try {
+      const itens = await Item.findAll();
+      return res.json(itens);
+    } catch (error) {
+      console.error('Erro ao buscar itens:', error);
+      return res.status(500).json({ error: 'Erro ao buscar itens' });
+    }
   }
 
   /**
@@ -55,6 +60,7 @@ class ItemController {
         ).nullable(),
         categoria_id: Yup.string().uuid().nullable(),
         fornecedor_id: Yup.string().uuid().nullable(),
+        quantidade_minima: Yup.number().integer().min(0)
       });
 
       if (!(await schema.isValid(req.body))) {

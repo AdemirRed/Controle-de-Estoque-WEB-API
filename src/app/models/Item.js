@@ -30,6 +30,14 @@ class Item extends Model {
             isInt: { msg: 'A quantidade deve ser um número inteiro' }
           }
         },
+        quantidade_minima: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+          validate: {
+            isInt: { msg: 'A quantidade mínima deve ser um número inteiro' }
+          }
+        },
         preco: {
           type: Sequelize.DECIMAL(10, 2),
           allowNull: false,

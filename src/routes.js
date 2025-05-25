@@ -34,7 +34,7 @@ routes.use(authMiddleware);
 
 // Usuários (todas as operações de usuário restritas a admin)
 routes.get('/usuarios', isAdmin, UserController.index); // [GET] Listar todos os usuários (admin)
-routes.get('/usuarios/:id', isAdmin, UserController.show); // [GET] Detalhar usuário
+routes.get('/usuarios/:id', UserController.show); // [GET] Detalhar usuário
 
 // Categorias (criação, atualização e remoção restritas a admin)
 routes.get('/categorias', CategoriaController.index); // [GET] Listar categorias
@@ -50,7 +50,7 @@ routes.post('/fornecedores', isAdmin, FornecedorController.store); // [POST] Cri
 routes.put('/fornecedores/:id', isAdmin, FornecedorController.update); // [PUT] Atualizar fornecedor
 routes.delete('/fornecedores/:id', isAdmin, FornecedorController.delete); // [DELETE] Remover fornecedor
 
-// Itens
+// Itens JA ESTÁ FEITO
 routes.get('/itens', ItemController.index); // [GET] Listar itens
 routes.get('/itens/:id', ItemController.show); // [GET] Detalhar item
 routes.post('/itens', ItemController.store); // [POST] Criar item
@@ -76,8 +76,8 @@ routes.put('/pedidos/:id/aprovar', PedidoController.aprovar); //[PUT] Atualizar 
 routes.get('/movimentacoes-estoque', MovimentacaoEstoqueController.index); // [GET] Listar movimentações de estoque
 routes.get('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.show); // [GET] Detalhar movimentação de estoque
 routes.post('/movimentacoes-estoque', MovimentacaoEstoqueController.store); // [POST] Criar movimentação de estoque
-// routes.put('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.update); // Removida rota de atualização
 routes.delete('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.delete); // [DELETE] Remover movimentação de estoque
+// routes.put('/movimentacoes-estoque/:id', MovimentacaoEstoqueController.update); // Removida rota de atualização
 
 // Relatórios de Pedido (todas as operações restritas a admin)
 routes.get('/relatorios-pedidos', isAdmin, RelatorioPedidoController.index); // [GET] Listar relatórios de pedidos

@@ -22,6 +22,11 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
+      quantidade_minima: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       preco: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
