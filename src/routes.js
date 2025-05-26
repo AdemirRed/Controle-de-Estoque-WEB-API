@@ -38,6 +38,7 @@ routes.use(authMiddleware);
 routes.get('/usuarios', isAdmin, UserController.index); // [GET] Listar todos os usuários (admin)
 routes.get('/usuarios/:id', UserController.show); // [GET] Detalhar usuário
 routes.put('/usuarios/:id', isAdmin, UserController.update); // [PUT] Atualizar usuário
+routes.delete('/usuarios/:id', isAdmin, UserController.delete); // [DELETE] Remover usuário
 
 // Categorias (criação, atualização e remoção restritas a admin)
 routes.get('/categorias', CategoriaController.index); // [GET] Listar categorias

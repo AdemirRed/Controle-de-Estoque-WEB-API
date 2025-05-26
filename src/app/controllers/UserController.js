@@ -164,6 +164,29 @@ class UserController {
       return res.status(500).json({ erro: 'Erro ao verificar e-mail.' });
     }
   }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      const usuario = await User.findByPk(id);
+
+      if (!usuario) {
+        return res.status(404).json({ erro: 'Usuário não encontrado.' });
+      }
+
+      await usuario.destroy();
+
+      return res.status(204).send();
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+      return res.status(500).json({
+        status: 'error',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Erro interno do servidor',
+        details: error.message,
+      });
+    }
+  }
 }
 
 export default new UserController();

@@ -1,4 +1,4 @@
 @echo off
-cd /d "E:\check-in-car\check-in-car-API"
+cd /d "E:/Projeto-Controle-Estoque/Controle-de-Estoque-WEB-API"
 yarn dev
 exit
