@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import ItemRequest from '../models/ItemRequest.js';
 import Item from '../models/Item.js';
-import PushSubscription from '../models/PushSubscription';
-import User from '../models/users';
+import PushSubscription from '../models/PushSubscription.js';
+import User from '../models/users.js';
 import webpush from 'web-push';
 
 webpush.setVapidDetails(

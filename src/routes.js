@@ -1,20 +1,21 @@
 import { Router } from 'express';
 
-import SessionController from './app/controllers/SessionController';
-import UserController from './app/controllers/UserController';
+import SessionController from './app/controllers/SessionController.js';
+import UserController from './app/controllers/UserController.js';
 
-import authMiddleware from './app/middlewares/authMiddleware';
-import isAdmin from './app/middlewares/isAdminMiddleware'; // Middleware de admin
+import authMiddleware from './app/middlewares/authMiddleware.js';
+import isAdmin from './app/middlewares/isAdminMiddleware.js'; // Middleware de admin
 
-import CategoriaController from './app/controllers/CategoriaController';
-import FornecedorController from './app/controllers/FornecedorController';
-import ItemController from './app/controllers/ItemController';
-import ItemRequestController from './app/controllers/ItemRequestController';
-import MovimentacaoEstoqueController from './app/controllers/MovimentacaoEstoqueController';
-import PedidoController from './app/controllers/PedidoController';
-import PushNotificationController from './app/controllers/PushNotificationController';
-import RelatorioPedidoController from './app/controllers/RelatorioPedidoController';
-import UnidadeMedidaController from './app/controllers/UnidadeMedidaController';
+import AuthController from './app/controllers/AuthController.js';
+import CategoriaController from './app/controllers/CategoriaController.js';
+import FornecedorController from './app/controllers/FornecedorController.js';
+import ItemController from './app/controllers/ItemController.js';
+import ItemRequestController from './app/controllers/ItemRequestController.js';
+import MovimentacaoEstoqueController from './app/controllers/MovimentacaoEstoqueController.js';
+import PedidoController from './app/controllers/PedidoController.js';
+import PushNotificationController from './app/controllers/PushNotificationController.js';
+import RelatorioPedidoController from './app/controllers/RelatorioPedidoController.js';
+import UnidadeMedidaController from './app/controllers/UnidadeMedidaController.js';
 
 const routes = new Router();
 
@@ -25,9 +26,9 @@ routes.post('/sessao', SessionController.store); // [POST] Login do usuário
 routes.post('/usuarios', UserController.store); // [POST] Criação de usuário
 
 // Removidas rotas de recuperação de senha e verificação de email
-// routes.post('/esqueci-senha', AuthController.forgotPassword); // [POST] Solicitar redefinição de senha
-// routes.post('/redefinir-senha', AuthController.resetPassword); // [POST] Redefinir senha
-// routes.post('/verificar-email', UserController.verifyEmail); // [POST] Verificar existência de email
+routes.post('/esqueci-senha', AuthController.forgotPassword); // [POST] Solicitar redefinição de senha
+routes.post('/redefinir-senha', AuthController.resetPassword); // [POST] Redefinir senha
+routes.post('/verificar-email', UserController.verifyEmail); // [POST] Verificar existência de email
 
 // Aplicar middleware para proteger todas as rotas abaixo:
 routes.use(authMiddleware);

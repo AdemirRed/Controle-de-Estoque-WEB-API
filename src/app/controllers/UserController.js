@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
-import User from '../models/users';
+import User from '../models/users.js';
 
 // Schema de validação definido diretamente no controller
 const userSchema = Yup.object().shape({

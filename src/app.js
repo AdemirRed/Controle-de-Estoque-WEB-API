@@ -4,7 +4,7 @@ import express from 'express';
 import './database/index.js';
 import routes from './routes.js';
 
-import './database'; // Importa a configuração do banco de dados
+import './database/index.js'; // Importa a configuração do banco de dados
 
 class App {
   constructor() {

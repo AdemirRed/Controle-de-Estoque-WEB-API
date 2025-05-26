@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-vars */
-import { Op } from 'sequelize';
-import { v4 as uuidv4 } from 'uuid';
-import * as Yup from 'yup';
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
-import Pedido from '../models/Pedido';
-import RelatorioPedido from '../models/RelatorioPedido';
+import { Op } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
+import * as Yup from 'yup';
+import Pedido from '../models/Pedido.js';
+import RelatorioPedido from '../models/RelatorioPedido.js';
+import { fileURLToPath } from 'url';
+
+// Substitua __dirname por este bloco:
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Definir o diretório base para salvar os relatórios
 const BASE_DIR = path.resolve(__dirname, '..', '..', '..', 'uploads', 'relatorios');

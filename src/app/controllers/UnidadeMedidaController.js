@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import UnidadeMedida from '../models/UnidadeMedida';
+import UnidadeMedida from '../models/UnidadeMedida.js';
 
 /**
  * Controller para gerenciamento de unidades de medida

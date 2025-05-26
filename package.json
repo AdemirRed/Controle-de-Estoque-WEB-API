@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "check-in-car-api",
   "version": "1.0.0",
   "description": "API para gerenciamento de acesso de veículos",

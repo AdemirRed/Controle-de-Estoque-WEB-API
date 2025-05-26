@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import webpush from 'web-push';
-import PushSubscription from '../models/PushSubscription';
-import User from '../models/users';
+import PushSubscription from '../models/PushSubscription.js';
+import User from '../models/users.js';
 
 // Configure as chaves VAPID (coloque as suas em variáveis de ambiente)
 webpush.setVapidDetails(
