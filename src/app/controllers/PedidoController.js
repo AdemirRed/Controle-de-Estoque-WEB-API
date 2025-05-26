@@ -3,7 +3,15 @@ import Item from '../models/Item.js';
 import Pedido from '../models/Pedido.js';
 import UnidadeMedida from '../models/UnidadeMedida.js';
 import Usuario from '../models/users.js';
+import PushSubscription from '../models/PushSubscription';
+import User from '../models/users';
+import webpush from 'web-push';
 
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT,
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
 
 /* eslint-disable no-unused-vars */
 /**
@@ -34,7 +42,7 @@ class PedidoController {
           },
           {
             model: Fornecedor,
-            attributes: ['id', 'nome', 'email']
+            attributes: ['id', 'nome', 'email', 'telefone']
           },
           {
             model: Usuario,
@@ -76,7 +84,7 @@ class PedidoController {
           },
           {
             model: Fornecedor,
-            attributes: ['id', 'nome', 'email', 'telefone']
+            attributes: ['id', 'nome', 'email', 'telefone'] // Adicione 'telefone' aqui
           },
           {
             model: Usuario,
@@ -206,6 +214,27 @@ class PedidoController {
         ]
       });
 
+      // Enviar notificação push para admins
+      try {
+        // Busca todos os admins
+        const admins = await User.findAll({ where: { papel: 'admin' } });
+        const adminIds = admins.map(a => a.id);
+        const subscriptions = await PushSubscription.findAll({ where: { user_id: adminIds } });
+        const payload = JSON.stringify({
+          title: 'Novo Pedido',
+          body: 'Um novo pedido foi criado.',
+          url: '/pedidos'
+        });
+        subscriptions.forEach(sub => {
+          webpush.sendNotification({
+            endpoint: sub.endpoint,
+            keys: sub.keys
+          }, payload).catch(() => {});
+        });
+      } catch (e) {
+        // Não impede o fluxo se falhar
+      }
+
       return res.status(201).json(pedidoCompleto);
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -221,10 +250,13 @@ class PedidoController {
       const { 
         quantidade, 
         observacoes,
-        valor_total, // Adicionado para permitir atualização do valor
+        valor_total,
         item_nome,
         item_descricao,
-        item_unidade_medida_id
+        item_unidade_medida_id,
+        status, // Novo campo
+        fornecedor_id, // Novo campo
+        motivo_rejeicao // Novo campo
       } = req.body;
 
       const pedido = await Pedido.findByPk(id);
@@ -233,42 +265,53 @@ class PedidoController {
         return res.status(404).json({ error: 'Pedido não encontrado' });
       }
 
-      if (pedido.status !== 'pendente') {
-        return res.status(400).json({ 
-          error: 'Apenas pedidos pendentes podem ser editados' 
-        });
-      }
-
-      if (quantidade && quantidade <= 0) {
-        return res.status(400).json({ 
-          error: 'Quantidade deve ser maior que zero' 
-        });
-      }
-
       const dadosAtualizacao = {};
+
+      // Validação de status
+      if (status) {
+        if (!['pendente', 'aprovado', 'rejeitado', 'entregue'].includes(status)) {
+          return res.status(400).json({ error: 'Status inválido' });
+        }
+
+        // Se estiver aprovando, precisa do fornecedor
+        if (status === 'aprovado' && !fornecedor_id) {
+          return res.status(400).json({ error: 'Fornecedor é obrigatório para aprovar o pedido' });
+        }
+
+        // Se estiver rejeitando, precisa do motivo
+        if (status === 'rejeitado' && !motivo_rejeicao) {
+          return res.status(400).json({ error: 'Motivo da rejeição é obrigatório' });
+        }
+
+        dadosAtualizacao.status = status;
+        if (status === 'aprovado') {
+          dadosAtualizacao.fornecedor_id = fornecedor_id;
+          dadosAtualizacao.aprovado_por = req.userId; // Corrigido de req.usuario.id para req.userId
+          dadosAtualizacao.data_aprovacao = new Date();
+        } else if (status === 'rejeitado') {
+          dadosAtualizacao.motivo_rejeicao = motivo_rejeicao;
+          dadosAtualizacao.rejeitado_por = req.userId; // Corrigido de req.usuario.id para req.userId
+          dadosAtualizacao.data_rejeicao = new Date();
+        }
+      }
       
-      // Atualizar quantidade
-      if (quantidade) {
+      // Atualizar outros campos
+      if (quantidade && quantidade > 0) {
         dadosAtualizacao.quantidade = quantidade;
-        
-        // Recalcular valor total apenas se for um item cadastrado
         if (pedido.item_id) {
           const item = await Item.findByPk(pedido.item_id);
           if (item) {
-            dadosAtualizacao.valor_total = item.preco * quantidade; // Alterado de preco_unitario para preco
+            dadosAtualizacao.valor_total = item.preco * quantidade;
           }
         } else if (valor_total) {
-          // Se não for item cadastrado, usar o valor_total informado
           dadosAtualizacao.valor_total = valor_total;
         }
       }
 
-      // Atualizar outros campos
       if (observacoes !== undefined) dadosAtualizacao.observacoes = observacoes;
       if (item_nome !== undefined) dadosAtualizacao.item_nome = item_nome;
       if (item_descricao !== undefined) dadosAtualizacao.item_descricao = item_descricao;
       if (item_unidade_medida_id !== undefined) {
-        // Verificar se a unidade de medida existe
         const unidadeMedida = await UnidadeMedida.findByPk(item_unidade_medida_id);
         if (!unidadeMedida) {
           return res.status(404).json({ error: 'Unidade de medida não encontrada' });
@@ -283,12 +326,26 @@ class PedidoController {
         include: [
           ...(pedido.item_id ? [{
             model: Item,
-            attributes: ['id', 'nome', 'descricao', 'preco'] // Alterado de preco_unitario para preco
+            attributes: ['id', 'nome', 'descricao', 'preco']
           }] : []),
           {
             model: UnidadeMedida,
             as: 'unidade_medida',
             attributes: ['id', 'nome', 'sigla']
+          },
+          {
+            model: Fornecedor,
+            attributes: ['id', 'nome', 'email']
+          },
+          {
+            model: Usuario,
+            as: 'aprovador',
+            attributes: ['id', 'nome', 'email']
+          },
+          {
+            model: Usuario,
+            as: 'rejeitador',
+            attributes: ['id', 'nome', 'email']
           }
         ]
       });
@@ -324,117 +381,6 @@ class PedidoController {
       return res.status(204).send();
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  }
-
-  /**
-   * Aprova um pedido
-   */
-  async aprovar(req, res) {
-    try {
-      const { id } = req.params;
-      const { fornecedor_id } = req.body;
-      const usuario = req.usuario; // Assumindo que existe um middleware de autenticação
-
-      if (!usuario.isAdmin) {
-        return res.status(403).json({ error: 'Apenas administradores podem aprovar pedidos' });
-      }
-
-      if (!fornecedor_id) {
-        return res.status(400).json({ error: 'Fornecedor é obrigatório para aprovação' });
-      }
-
-      const pedido = await Pedido.findByPk(id);
-
-      if (!pedido) {
-        return res.status(404).json({ error: 'Pedido não encontrado' });
-      }
-
-      if (pedido.status !== 'pendente') {
-        return res.status(400).json({ error: 'Pedido já foi processado' });
-      }
-
-      // Verificar se o fornecedor existe
-      const fornecedor = await Fornecedor.findByPk(fornecedor_id);
-      if (!fornecedor) {
-        return res.status(404).json({ error: 'Fornecedor não encontrado' });
-      }
-
-      await pedido.update({
-        fornecedor_id,
-        status: 'aprovado',
-        aprovado_por: usuario.id,
-        data_aprovacao: new Date(),
-      });
-
-      // Retornar pedido com dados completos
-      const pedidoAprovado = await Pedido.findByPk(id, {
-        include: [
-          {
-            model: Item,
-            attributes: ['id', 'nome', 'descricao']
-          },
-          {
-            model: Fornecedor,
-            attributes: ['id', 'nome', 'email']
-          },
-          {
-            model: Usuario,
-            as: 'aprovador',
-            attributes: ['id', 'nome', 'email']
-          }
-        ]
-      });
-
-      return res.json(pedidoAprovado);
-    } catch (error) {
-      return res.status(500).json({
-        status: 'error',
-        code: 'APPROVAL_ERROR',
-        message: 'Erro ao aprovar pedido',
-        details: error.message
-      });
-    }
-  }
-
-  /**
-   * Rejeita um pedido
-   */
-  async rejeitar(req, res) {
-    try {
-      const { id } = req.params;
-      const { motivo_rejeicao } = req.body;
-      const usuario = req.usuario;
-
-      if (!usuario.isAdmin) {
-        return res.status(403).json({ error: 'Apenas administradores podem rejeitar pedidos' });
-      }
-
-      const pedido = await Pedido.findByPk(id);
-
-      if (!pedido) {
-        return res.status(404).json({ error: 'Pedido não encontrado' });
-      }
-
-      if (pedido.status !== 'pendente') {
-        return res.status(400).json({ error: 'Apenas pedidos pendentes podem ser rejeitados' });
-      }
-
-      await pedido.update({
-        status: 'rejeitado',
-        motivo_rejeicao,
-        rejeitado_por: usuario.id,
-        data_rejeicao: new Date(),
-      });
-
-      return res.json(pedido);
-    } catch (error) {
-      return res.status(500).json({
-        status: 'error',
-        code: 'REJECTION_ERROR',
-        message: 'Erro ao rejeitar pedido',
-        details: error.message
-      });
     }
   }
 

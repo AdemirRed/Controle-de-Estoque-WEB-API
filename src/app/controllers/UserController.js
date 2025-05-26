@@ -68,7 +68,7 @@ class UserController {
   async index(req, res) {
     try {
       const usuarios = await User.findAll({
-        attributes: ['id', 'nome', 'email'],
+        attributes: ['id', 'nome', 'email', 'createdAt', 'updatedAt'],
       });
       return res.json(usuarios);
     } catch (error) {
@@ -92,6 +92,55 @@ class UserController {
     } catch (error) {
       console.error('Erro ao buscar usuário:', error);
       return res.status(500).json({ erro: 'Erro ao buscar usuário.' });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { nome, email, senha_hash, papel } = req.body;
+
+      const usuario = await User.findByPk(id);
+
+      if (!usuario) {
+        return res.status(404).json({ erro: 'Usuário não encontrado.' });
+      }
+
+      if (email && email !== usuario.email) {
+        const emailExiste = await User.findOne({ where: { email } });
+        if (emailExiste) {
+          return res
+            .status(409)
+            .json({ erro: 'Já existe um usuário cadastrado com este e-mail.' });
+        }
+      }
+
+      let senhaCriptografada = usuario.senha_hash;
+      if (senha_hash) {
+        senhaCriptografada = await bcrypt.hash(senha_hash, 8);
+      }
+
+      await usuario.update({
+        nome: nome || usuario.nome,
+        email: email || usuario.email,
+        senha_hash: senhaCriptografada,
+        papel: papel || usuario.papel,
+      });
+
+      return res.status(200).json({
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        papel: usuario.papel,
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      return res.status(500).json({
+        status: 'error',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Erro interno do servidor',
+        details: error.message,
+      });
     }
   }
 

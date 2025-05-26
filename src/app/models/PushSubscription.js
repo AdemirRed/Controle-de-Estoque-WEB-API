@@ -1,35 +1,35 @@
 import Sequelize, { Model } from 'sequelize';
-import { v4 as uuidv4 } from 'uuid';
 
-class UnidadeMedida extends Model {
+class PushSubscription extends Model {
   static init(sequelize) {
     super.init(
       {
         id: {
           type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
-          defaultValue: () => uuidv4(),
         },
-        nome: {
+        user_id: {
+          type: Sequelize.UUID,
+          allowNull: false,
+        },
+        endpoint: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        sigla: {
-          type: Sequelize.STRING,
+        keys: {
+          type: Sequelize.JSON,
           allowNull: false,
         },
       },
       {
         sequelize,
-        tableName: 'unidades_medida',
+        tableName: 'push_subscriptions',
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
       }
     );
-
     return this;
   }
 }
 
-export default UnidadeMedida;
+export default PushSubscription;

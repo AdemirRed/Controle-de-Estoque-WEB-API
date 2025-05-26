@@ -1,10 +1,10 @@
 require('dotenv').config(); // Carrega variáveis do .env
 import cors from 'cors';
+import fs from 'fs';
+import https from 'https';
 import { WebSocketServer } from 'ws'; // Importa WebSocketServer
 import app from './app.js'; // Importa a aplicação
 
-const port = process.env.PORT || 3001;
-const host = process.env.HOST || '0.0.0.0'; // Fallback para qualquer interface
 
 const allowedOrigins = [
   'http://192.168.0.200:2002',
@@ -26,7 +26,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'] // Headers permitidos
 }));
 
-const wsPort = process.env.PORT_SERVER || 3002; // Usa a porta do .env ou fallback para 3002
+const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket
+const httpsPort = process.env.PORT_HTTPS || 2001; // Porta HTTPS
 
 let wss;
 try {
@@ -70,8 +71,12 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// Inicia o servidor Express
-app.listen(port, host, () => {
-  const displayHost = host === '0.0.0.0' ? '192.168.0.200' : host ;
-  console.log(`Server running at http://${displayHost}:${port}`);
+// Inicia o servidor HTTPS
+const options = {
+  key: fs.readFileSync('./certs/key.pem'),
+  cert: fs.readFileSync('./certs/cert.pem'),
+};
+
+https.createServer(options, app).listen(httpsPort, () => {
+  console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
 });

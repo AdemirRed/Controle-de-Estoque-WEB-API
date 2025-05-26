@@ -13,13 +13,19 @@ class FornecedorController {
 
   async show(req, res) {
     try {
-      const fornecedor = await Fornecedor.findByPk(req.params.id);
+      const { id } = req.params;
+
+      // Tente buscar sem o array attributes para debug
+      const fornecedor = await Fornecedor.findByPk(id);
+
       if (!fornecedor) {
         return res.status(404).json({ error: 'Fornecedor não encontrado' });
       }
+
       return res.json(fornecedor);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error('Erro ao buscar fornecedor:', error); // Log detalhado
+      return res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
     }
   }
 
@@ -31,16 +37,12 @@ class FornecedorController {
         return res.status(400).json({ error: 'Nome e telefone são obrigatórios' });
       }
 
-      if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        return res.status(400).json({ error: 'Formato de e-mail inválido' });
-      }
+      const fornecedor = await Fornecedor.create({
+        nome,
+        telefone,
+        email: email || null, // Define email como null se estiver vazio
+      });
 
-      // Se email estiver vazio, remove do req.body para não causar erro de validação
-      if (!email) {
-        delete req.body.email;
-      }
-
-      const fornecedor = await Fornecedor.create(req.body);
       return res.status(201).json(fornecedor);
     } catch (error) {
       if (error.name === 'SequelizeValidationError') {
@@ -53,6 +55,7 @@ class FornecedorController {
         });
       }
       
+      console.error('Erro ao criar fornecedor:', error);
       return res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }

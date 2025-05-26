@@ -7,37 +7,31 @@ class Fornecedor extends Model {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
-          primaryKey: true,
           allowNull: false,
+          primaryKey: true,
         },
         nome: {
           type: Sequelize.STRING,
           allowNull: false,
-          validate: {
-            notEmpty: true,
-          },
         },
         telefone: {
           type: Sequelize.STRING,
           allowNull: false,
-          validate: {
-            notEmpty: true,
-          },
         },
         email: {
           type: Sequelize.STRING,
           allowNull: true,
           validate: {
-            isEmail: true,
+            isEmail: {
+              msg: 'Formato de e-mail inválido',
+            },
           },
         },
       },
       {
         sequelize,
-        modelName: 'Fornecedor',
-        tableName: 'fornecedores',
-        timestamps: true,
-        underscored: true,
+        tableName: 'fornecedores', // Certifique-se de que o nome da tabela está correto
+        timestamps: true, // Inclui createdAt e updatedAt
       }
     );
 

@@ -10,10 +10,12 @@ import isAdmin from './app/middlewares/isAdminMiddleware'; // Middleware de admi
 import CategoriaController from './app/controllers/CategoriaController';
 import FornecedorController from './app/controllers/FornecedorController';
 import ItemController from './app/controllers/ItemController';
+import ItemRequestController from './app/controllers/ItemRequestController';
 import MovimentacaoEstoqueController from './app/controllers/MovimentacaoEstoqueController';
 import PedidoController from './app/controllers/PedidoController';
 import RelatorioPedidoController from './app/controllers/RelatorioPedidoController';
 import UnidadeMedidaController from './app/controllers/UnidadeMedidaController';
+import PushNotificationController from './app/controllers/PushNotificationController';
 
 const routes = new Router();
 
@@ -35,6 +37,7 @@ routes.use(authMiddleware);
 // Usuários (todas as operações de usuário restritas a admin)
 routes.get('/usuarios', isAdmin, UserController.index); // [GET] Listar todos os usuários (admin)
 routes.get('/usuarios/:id', UserController.show); // [GET] Detalhar usuário
+routes.put('/usuarios/:id', isAdmin, UserController.update); // [PUT] Atualizar usuário
 
 // Categorias (criação, atualização e remoção restritas a admin)
 routes.get('/categorias', CategoriaController.index); // [GET] Listar categorias
@@ -68,9 +71,8 @@ routes.delete('/unidades-medida/:id', isAdmin, UnidadeMedidaController.delete); 
 routes.get('/pedidos', PedidoController.index); // [GET] Listar pedidos
 routes.get('/pedidos/:id', PedidoController.show); // [GET] Detalhar pedido
 routes.post('/pedidos', PedidoController.store); // [POST] Criar pedido
-routes.put('/pedidos/:id', PedidoController.update); // [PUT] Atualizar pedido
+routes.put('/pedidos/:id', isAdmin, PedidoController.update); // [PUT] Atualizar pedido (incluindo status)
 routes.delete('/pedidos/:id', PedidoController.delete); // [DELETE] Remover pedido
-routes.put('/pedidos/:id/aprovar', PedidoController.aprovar); //[PUT] Atualizar pedido
 
 // Movimentações de Estoque
 routes.get('/movimentacoes-estoque', MovimentacaoEstoqueController.index); // [GET] Listar movimentações de estoque
@@ -85,5 +87,17 @@ routes.get('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.show); 
 routes.post('/relatorios-pedidos', isAdmin, RelatorioPedidoController.store); // [POST] Criar relatório de pedido
 routes.put('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.update); // [PUT] Atualizar relatório de pedido
 routes.delete('/relatorios-pedidos/:id', isAdmin, RelatorioPedidoController.delete); // [DELETE] Remover relatório de pedido
+
+// Requisições de Itens
+routes.post('/item-requests', ItemRequestController.store); // Usuário faz requisição de item
+routes.get('/item-requests/minhas', ItemRequestController.userRequests); // Usuário vê suas requisições
+routes.get('/item-requests', isAdmin, ItemRequestController.index); // Admin vê todas as requisições
+routes.get('/item-requests/:id', ItemRequestController.show); // Detalhar requisição específica
+routes.put('/item-requests/:id', isAdmin, ItemRequestController.update); // Admin altera status
+routes.delete('/item-requests/:id',  ItemRequestController.delete); // Admin apaga requisição
+
+// Notificações Push
+routes.post('/push-subscriptions', PushNotificationController.subscribe); // Salvar subscription do usuário logado
+routes.post('/push-notify', isAdmin, PushNotificationController.notifyAdmins); // Enviar notificação para todos admins
 
 export default routes;

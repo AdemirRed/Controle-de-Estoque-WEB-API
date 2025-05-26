@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
-import sequelize from '../../config/database.js';
+import { sequelize } from '../../database/index.js'; // Caminho correto para a instância do Sequelize
 import Item from '../models/Item.js';
 import MovimentacaoEstoque from '../models/MovimentacaoEstoque.js';
 
@@ -72,15 +72,6 @@ class MovimentacaoEstoqueController {
    */
   async store(req, res) {
     try {
-      // Verifica se o ID do usuário está presente
-      if (!req.userId) {
-        return res.status(401).json({
-          status: 'error',
-          code: 'UNAUTHORIZED',
-          message: 'Usuário não autorizado'
-        });
-      }
-
       const schema = Yup.object().shape({
         item_id: Yup.string().required('ID do item é obrigatório'),
         tipo: Yup.string()
@@ -92,7 +83,8 @@ class MovimentacaoEstoqueController {
           .required('Quantidade é obrigatória')
           .positive('Quantidade deve ser positiva'),
         motivo: Yup.string().nullable(),
-        observacao: Yup.string().nullable()
+        observacao: Yup.string().nullable(),
+        usuario_id: Yup.string().required('usuario_id é obrigatório'),
       });
 
       let validatedData;
@@ -116,7 +108,7 @@ class MovimentacaoEstoqueController {
       }
 
       // Usar os dados validados ao invés do req.body direto
-      const { item_id, tipo, quantidade, motivo, observacao } = validatedData;
+      const { item_id, tipo, quantidade, motivo, observacao, usuario_id } = validatedData;
 
       // Busca o item e verifica se existe
       const item = await Item.findByPk(item_id);
@@ -161,7 +153,7 @@ class MovimentacaoEstoqueController {
           quantidade_atual,
           motivo,
           observacao,
-          usuario_id: req.userId,  // Usa req.userId ao invés de req.user.id
+          usuario_id, // Agora vem do body
           data_movimentacao: new Date()
         }, { transaction: t });
 
