@@ -1,4 +1,6 @@
-require('dotenv').config(); // Carrega variáveis do .env
+import dotenv from 'dotenv';
+dotenv.config(); // Carrega variáveis do .env
+
 import cors from 'cors';
 import fs from 'fs';
 import https from 'https';
@@ -7,12 +9,11 @@ import app from './app.js'; // Importa a aplicação
 
 
 const allowedOrigins = [
-  'http://192.168.0.200:2002',
-  'http://192.168.0.200:3001',
+  'https://redblackspy.ddns.net:2002',
+  'https://redblackspy.ddns.net:3001',
   'http://localhost:2002'
 ];
 
-// Configuração do CORS
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -21,9 +22,9 @@ app.use(cors({
       callback(new Error('Não permitido pelo CORS'));
     }
   },
-  credentials: true, // Necessário se você estiver enviando cookies ou autenticação
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization'] // Headers permitidos
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket

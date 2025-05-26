@@ -3,7 +3,6 @@ import { Router } from 'express';
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
 
-import AuthController from './app/controllers/AuthController';
 import authMiddleware from './app/middlewares/authMiddleware';
 import isAdmin from './app/middlewares/isAdminMiddleware'; // Middleware de admin
 
@@ -13,9 +12,9 @@ import ItemController from './app/controllers/ItemController';
 import ItemRequestController from './app/controllers/ItemRequestController';
 import MovimentacaoEstoqueController from './app/controllers/MovimentacaoEstoqueController';
 import PedidoController from './app/controllers/PedidoController';
+import PushNotificationController from './app/controllers/PushNotificationController';
 import RelatorioPedidoController from './app/controllers/RelatorioPedidoController';
 import UnidadeMedidaController from './app/controllers/UnidadeMedidaController';
-import PushNotificationController from './app/controllers/PushNotificationController';
 
 const routes = new Router();
 
@@ -25,9 +24,10 @@ routes.post('/sessao', SessionController.store); // [POST] Login do usuário
 // Rota pública para criar primeiro usuário (admin inicial, se quiser)
 routes.post('/usuarios', UserController.store); // [POST] Criação de usuário
 
-routes.post('/esqueci-senha', AuthController.forgotPassword); // [POST] Solicitar redefinição de senha
-routes.post('/redefinir-senha', AuthController.resetPassword); // [POST] Redefinir senha
-routes.post('/verificar-email', UserController.verifyEmail); // [POST] Verificar existência de email
+// Removidas rotas de recuperação de senha e verificação de email
+// routes.post('/esqueci-senha', AuthController.forgotPassword); // [POST] Solicitar redefinição de senha
+// routes.post('/redefinir-senha', AuthController.resetPassword); // [POST] Redefinir senha
+// routes.post('/verificar-email', UserController.verifyEmail); // [POST] Verificar existência de email
 
 // Aplicar middleware para proteger todas as rotas abaixo:
 routes.use(authMiddleware);

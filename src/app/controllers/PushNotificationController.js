@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import webpush from 'web-push';
 import PushSubscription from '../models/PushSubscription';
 import User from '../models/users';
