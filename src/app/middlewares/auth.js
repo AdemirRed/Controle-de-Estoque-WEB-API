@@ -19,17 +19,17 @@ export default async (req, res, next) => {
   try {
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);
     
-    console.log('Token decodificado:', decoded); // Debug
+    //console.log('Token decodificado:', decoded); // Debug
 
     // Tenta obter o ID do usuário de várias formas possíveis
     req.userId = decoded.id || decoded.usuario_id || decoded.userId;
     req.userRole = decoded.papel || decoded.role;
     req.userName = decoded.nome || decoded.name;
     
-    console.log('ID do usuário extraído:', req.userId); // Debug
+    //console.log('ID do usuário extraído:', req.userId); // Debug
 
     if (!req.userId) {
-      console.log('Conteúdo completo do token:', decoded); // Debug
+      //console.log('Conteúdo completo do token:', decoded); // Debug
       return res.status(401).json({
         status: 'error',
         code: 'INVALID_TOKEN',

@@ -34,7 +34,7 @@ let wss;
 try {
   // Tenta iniciar o servidor WebSocket na porta definida
   wss = new WebSocketServer({ port: wsPort });
-  console.log(`WebSocket server running on port ${wsPort}`);
+  //console.log(`WebSocket server running on port ${wsPort}`);
 } catch (error) {
   // Se a porta já estiver em uso, loga o erro e encerra a aplicação
   if (error.code === 'EADDRINUSE') {
@@ -53,22 +53,22 @@ wss.on('connection', (ws, req) => {
   // Validação simples do token - considere usar algo mais robusto como JWT
   if (token !== '94mBxZoPdDgY') { // Substitua pelo token esperado ou lógica de validação mais segura
     ws.close(1008, 'Invalid token'); // Fecha a conexão com código de política de violação
-    console.log('WebSocket connection rejected: Invalid token');
+    //console.log('WebSocket connection rejected: Invalid token');
     return;
   }
 
-  console.log('WebSocket connection established');
+  //console.log('WebSocket connection established');
 
   // Ouve por mensagens recebidas no WebSocket
   ws.on('message', (message) => {
-    console.log('Received:', message);
+    //console.log('Received:', message);
     ws.send('Message received');
   });
 
 
   // Fecha a conexão WebSocket quando o cliente desconectar
   ws.on('close', () => {
-    console.log('WebSocket connection closed');
+    //console.log('WebSocket connection closed');
   });
 });
 
@@ -79,5 +79,5 @@ const options = {
 };
 
 https.createServer(options, app).listen(httpsPort, () => {
-  console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
+  //console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
 });

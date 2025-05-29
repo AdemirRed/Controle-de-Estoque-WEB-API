@@ -26,7 +26,7 @@ async function sendEmail({ to, subject, text, html }) {
       html,
     });
 
-    console.log('📨 Info:', info);
+    //console.log('📨 Info:', info);
   } catch (error) {
     console.error('❌ Erro ao enviar e-mail:', error);
     console.error('📋 Detalhes do erro:', {

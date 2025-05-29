@@ -9,7 +9,7 @@ async function testarEnvioEmail() {
       text: 'Este é um teste simples de envio de e-mail usando o utilitário sendEmail.',
       html: '<b>Este é um teste simples de envio de e-mail usando o utilitário <code>sendEmail</code>.</b>',
     });
-    console.log('✅ E-mail enviado com sucesso!');
+    //console.log('✅ E-mail enviado com sucesso!');
   } catch (error) {
     console.error('❌ Falha ao enviar e-mail:', error);
   }

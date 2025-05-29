@@ -26,6 +26,19 @@ class User extends Model {
           type: Sequelize.STRING,
           allowNull: true,
         },
+        tentativas_recuperacao: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          defaultValue: 0,
+        },
+        ultima_tentativa_recuperacao: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
+        codigo_recuperacao_expiracao: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
       },
       {
         sequelize,

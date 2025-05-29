@@ -1,5 +1,3 @@
- 
- 
 import * as Yup from 'yup';
 import Item from '../models/Item.js';
 
@@ -34,6 +32,25 @@ class ItemController {
    */
   async store(req, res) {
     try {
+      // Verifica se já existe item com o mesmo nome (case insensitive)
+      const nome = req.body.nome?.trim();
+      if (!nome) {
+        return res.status(400).json({
+          status: 'error',
+          code: 'ITEM_CREATION_ERROR',
+          message: 'O nome do item é obrigatório',
+        });
+      }
+      const itemExistente = await Item.findOne({
+        where: { nome: nome },
+      });
+      if (itemExistente) {
+        return res.status(400).json({
+          status: 'error',
+          code: 'ITEM_DUPLICATE',
+          message: 'Já existe um item cadastrado com esse nome',
+        });
+      }
       const item = await Item.create(req.body);
       return res.status(201).json(item);
     } catch (error) {

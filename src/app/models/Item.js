@@ -13,6 +13,7 @@ class Item extends Model {
         nome: {
           type: Sequelize.STRING,
           allowNull: false,
+          unique: true, // Garante unicidade no banco
           validate: {
             notEmpty: { msg: 'O nome não pode estar vazio' }
           }

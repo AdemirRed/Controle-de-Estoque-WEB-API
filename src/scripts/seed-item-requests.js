@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { v4 as uuidv4 } from 'uuid';
-import sequelize from '../database/index.js';
 import ItemRequest from '../app/models/ItemRequest.js';
+import sequelize from '../database/index.js';
 
 // Inicializa o modelo
 ItemRequest.init(sequelize);
@@ -34,7 +34,7 @@ async function seed() {
   try {
     await sequelize.authenticate();
     await ItemRequest.bulkCreate(seedData);
-    console.log('Dados inseridos com sucesso!');
+    //console.log('Dados inseridos com sucesso!');
     process.exit(0);
   } catch (err) {
     console.error('Erro ao inserir dados:', err);
