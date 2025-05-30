@@ -11,6 +11,7 @@ import app from './app.js'; // Importa a aplicação
 const allowedOrigins = [
   'https://redblackspy.ddns.net:2002',
   'https://redblackspy.ddns.net:3001',
+  'https://inventoryctr.netlify.app',
   'http://localhost:2002'
 ];
 
@@ -27,7 +28,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket
+const wsPort = process.env.PORT_SERVER || 2002; // Porta WebSocket alterada para 2002
 const httpsPort = process.env.PORT_HTTPS || 2001; // Porta HTTPS
 
 let wss;

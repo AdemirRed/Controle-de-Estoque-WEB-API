@@ -65,35 +65,35 @@ class AuthController {
         Atenciosamente,
         Equipe Controle de Estoque`,
           html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px; box-shadow: 0 4px 24px rgba(44,62,80,0.10);">
-              <div style="background: #2d9cdb; border-radius: 12px 12px 0 0; padding: 32px 24px 16px 24px; text-align: center;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 0; background: #181c24; border-radius: 12px; box-shadow: 0 4px 24px rgba(20,20,20,0.25);">
+              <div style="background: linear-gradient(90deg, #232a34 0%, #2d9cdb 100%); border-radius: 12px 12px 0 0; padding: 32px 24px 16px 24px; text-align: center;">
                 <img src="https://img.icons8.com/ios-filled/100/ffffff/lock-2.png" alt="Recuperação de Senha" style="width: 60px; margin-bottom: 12px;" />
                 <h1 style="color: #fff; margin: 0; font-size: 2.2rem;">Recuperação de Senha</h1>
               </div>
               <div style="padding: 32px 24px;">
-                <p style="font-size: 1.1rem; color: #333;">Olá,</p>
-                <p style="font-size: 1rem; color: #444;">
-                  Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Controle de Estoque</strong>.
+                <p style="font-size: 1.1rem; color: #fff;">Olá,</p>
+                <p style="font-size: 1rem; color: #e0e6ed;">
+                  Recebemos uma solicitação para redefinir a senha da sua conta no <strong style="color:#2d9cdb;">Controle de Estoque</strong>.
                 </p>
-                <p style="font-size: 1rem; color: #444;">
+                <p style="font-size: 1rem; color: #e0e6ed;">
                   Utilize o código abaixo para prosseguir com a redefinição:
                 </p>
-                <div style="font-size: 2.2rem; font-weight: bold; color: #2d9cdb; letter-spacing: 6px; background: #fff; border-radius: 8px; padding: 18px 0; margin: 28px 0 12px 0; text-align: center; border: 2px dashed #2d9cdb;">
+                <div style="font-size: 2.2rem; font-weight: bold; color: #2d9cdb; letter-spacing: 6px; background: #232a34; border-radius: 8px; padding: 18px 0; margin: 28px 0 12px 0; text-align: center; border: 2px dashed #2d9cdb;">
                   ${codigo}
                 </div>
-                <div style="font-size: 0.95rem; color: #888; margin: 12px 0 24px 0; text-align: center;">
+                <div style="font-size: 0.95rem; color: #b0b8c1; margin: 12px 0 24px 0; text-align: center;">
                   Selecione o código acima e copie para utilizar na redefinição de senha.
                 </div>
-                <p style="color: #888; font-size: 1rem;">
+                <p style="color: #b0b8c1; font-size: 1rem;">
                   Este código é válido por tempo limitado e deve ser utilizado apenas por você.
                 </p>
-                <p style="color: #e74c3c; font-size: 0.95rem; margin-top: 18px;">
+                <p style="color: #ff7675; font-size: 0.95rem; margin-top: 18px;">
                   Se você não solicitou a alteração, nenhuma ação é necessária. Sua conta permanecerá segura.
                 </p>
               </div>
-              <div style="background: #f5f7fa; border-radius: 0 0 12px 12px; padding: 18px 24px; text-align: center;">
-                <hr style="border: none; border-top: 1px solid #e1e4e8; margin: 0 0 12px 0;">
-                <p style="font-size: 0.95rem; color: #aaa; margin: 0;">
+              <div style="background: #232a34; border-radius: 0 0 12px 12px; padding: 18px 24px; text-align: center;">
+                <hr style="border: none; border-top: 1px solid #2d9cdb; margin: 0 0 12px 0;">
+                <p style="font-size: 0.95rem; color: #7f8fa6; margin: 0;">
                   Este é um e-mail automático. Por favor, não responda.<br>
                   Controle de Estoque &copy; ${new Date().getFullYear()}
                 </p>
@@ -160,26 +160,26 @@ Se você realizou esta alteração, pode desconsiderar este e-mail. Caso não te
 Atenciosamente,
 Equipe Controle de Estoque`,
           html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px; box-shadow: 0 4px 24px rgba(44,62,80,0.10);">
-              <div style="background: #27ae60; border-radius: 12px 12px 0 0; padding: 32px 24px 16px 24px; text-align: center;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 0; background: #181c24; border-radius: 12px; box-shadow: 0 4px 24px rgba(20,20,20,0.25);">
+              <div style="background: linear-gradient(90deg, #232a34 0%, #27ae60 100%); border-radius: 12px 12px 0 0; padding: 32px 24px 16px 24px; text-align: center;">
                 <img src="https://img.icons8.com/ios-filled/100/ffffff/ok--v1.png" alt="Senha Alterada" style="width: 60px; margin-bottom: 12px;" />
                 <h1 style="color: #fff; margin: 0; font-size: 2.2rem;">Senha Alterada com Sucesso</h1>
               </div>
               <div style="padding: 32px 24px;">
-                <p style="font-size: 1.1rem; color: #333;">Olá,</p>
-                <p style="font-size: 1rem; color: #444;">
-                  Informamos que a senha da sua conta no <strong>Controle de Estoque</strong> foi alterada com sucesso.
+                <p style="font-size: 1.1rem; color: #fff;">Olá,</p>
+                <p style="font-size: 1rem; color: #e0e6ed;">
+                  Informamos que a senha da sua conta no <strong style="color:#27ae60;">Controle de Estoque</strong> foi alterada com sucesso.
                 </p>
-                <p style="font-size: 1rem; color: #444;">
+                <p style="font-size: 1rem; color: #e0e6ed;">
                   Agora você já pode acessar o sistema utilizando sua nova senha.
                 </p>
-                <p style="color: #e67e22; font-size: 0.95rem; margin-top: 18px;">
+                <p style="color: #f1c40f; font-size: 0.95rem; margin-top: 18px;">
                   Se você não realizou esta alteração, entre em contato imediatamente com o suporte.
                 </p>
               </div>
-              <div style="background: #f5f7fa; border-radius: 0 0 12px 12px; padding: 18px 24px; text-align: center;">
-                <hr style="border: none; border-top: 1px solid #e1e4e8; margin: 0 0 12px 0;">
-                <p style="font-size: 0.95rem; color: #aaa; margin: 0;">
+              <div style="background: #232a34; border-radius: 0 0 12px 12px; padding: 18px 24px; text-align: center;">
+                <hr style="border: none; border-top: 1px solid #27ae60; margin: 0 0 12px 0;">
+                <p style="font-size: 0.95rem; color: #7f8fa6; margin: 0;">
                   Este é um e-mail automático. Por favor, não responda.<br>
                   Controle de Estoque &copy; ${new Date().getFullYear()}
                 </p>
