@@ -28,7 +28,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const wsPort = process.env.PORT_SERVER || 2002; // Porta WebSocket alterada para 2002
+const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket
 const httpsPort = process.env.PORT_HTTPS || 2001; // Porta HTTPS
 
 let wss;
