@@ -40,14 +40,25 @@ class Item extends Model {
           }
         },
         preco: {
-          type: Sequelize.DECIMAL(10, 2),
+          type: Sequelize.DECIMAL(10, 2), // Corresponde a NUMERIC(10,2) no PostgreSQL
           allowNull: false,
           defaultValue: 0,
           get() {
-            return parseFloat(this.getDataValue('preco'));
+            const value = this.getDataValue('preco');
+            return value === null ? 0 : parseFloat(value);
           },
           set(value) {
-            this.setDataValue('preco', value === '' ? 0 : value);
+            // Tratar casos como string vazia, null ou undefined
+            if (value === '' || value === null || value === undefined) {
+              this.setDataValue('preco', 0);
+            } else {
+              // Garantir que o valor seja um número decimal
+              const numValue = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value;
+              this.setDataValue('preco', isNaN(numValue) ? 0 : numValue);
+            }
+          },
+          validate: {
+            isDecimal: { msg: 'O preço deve ser um valor decimal válido' }
           }
         },
       },
