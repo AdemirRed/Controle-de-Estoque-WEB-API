@@ -61,7 +61,7 @@ wss.on('connection', (ws, req) => {
   //console.log('WebSocket connection established');
 
   // Ouve por mensagens recebidas no WebSocket
-  ws.on('message', (message) => {
+  ws.on('message', () => {
     //console.log('Received:', message);
     ws.send('Message received');
   });

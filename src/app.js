@@ -1,5 +1,5 @@
-import 'dotenv/config';
 import cors from 'cors';
+import 'dotenv/config';
 import express from 'express';
 import './database/index.js';
 import routes from './routes.js';
@@ -14,19 +14,39 @@ class App {
   }
 
   middleware() {
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    // Configuração do CORS - garantir que seja aplicada antes de qualquer outra middleware
+    this.app.use(cors({
+      origin: [
+        'https://redblackspy.ddns.net:2002',
+        'https://redblackspy.ddns.net:3001', 
+        'https://inventoryctr.netlify.app',
+        'http://localhost:2002'
+      ],
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    }));
 
-    // Configuração simplificada do CORS
-    this.app.use(cors());
-
-    // Middleware adicional para garantir os headers CORS
+    // Middleware que adiciona cabeçalhos CORS diretamente
     this.app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+      const origin = req.headers.origin;
+      if (origin === 'https://inventoryctr.netlify.app') {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+      }
+      
+      // Responder imediatamente para requisições OPTIONS
+      if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+      }
+      
       next();
     });
+
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
   }
 
   routes() {
