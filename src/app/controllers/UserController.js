@@ -70,7 +70,8 @@ class UserController {
       const usuarios = await User.findAll({
         attributes: ['id', 'nome', 'email', 'createdAt', 'updatedAt'],
       });
-      return res.json(usuarios);
+      // Retorna array vazio se não houver usuários
+      return res.json(usuarios || []);
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
       return res.status(500).json({ erro: 'Erro ao buscar usuários.' });

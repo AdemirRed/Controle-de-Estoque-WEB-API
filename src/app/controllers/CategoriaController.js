@@ -14,6 +14,9 @@ class CategoriaController {
   async index(req, res) {
     try {
       const categorias = await Categoria.findAll();
+      if (!categorias || categorias.length === 0) {
+        return res.json([]);
+      }
       return res.json(categorias);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno do servidor' });
@@ -30,7 +33,7 @@ class CategoriaController {
     try {
       const categoria = await Categoria.findByPk(req.params.id);
       if (!categoria) {
-        return res.status(404).json({ error: 'Categoria não encontrada' });
+        return res.json({});
       }
       return res.json(categoria);
     } catch (error) {

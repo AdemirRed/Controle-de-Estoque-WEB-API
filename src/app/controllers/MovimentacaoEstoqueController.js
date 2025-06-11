@@ -22,6 +22,10 @@ class MovimentacaoEstoqueController {
         order: [['data_movimentacao', 'DESC']]
       });
 
+      if (!movimentacoes || movimentacoes.length === 0) {
+        return res.json([]);
+      }
+
       return res.json(movimentacoes);
     } catch (error) {
       return res.status(500).json({
@@ -49,11 +53,7 @@ class MovimentacaoEstoqueController {
       });
 
       if (!movimentacao) {
-        return res.status(404).json({
-          status: 'error',
-          code: 'MOVEMENT_NOT_FOUND',
-          message: 'Movimentação não encontrada'
-        });
+        return res.json({});
       }
 
       return res.json(movimentacao);

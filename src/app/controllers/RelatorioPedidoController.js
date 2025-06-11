@@ -38,6 +38,15 @@ class RelatorioPedidoController {
         offset: (page - 1) * limit,
       });
 
+      if (!relatorios.rows || relatorios.rows.length === 0) {
+        return res.json({
+          relatorios: [],
+          total: 0,
+          pages: 0,
+          currentPage: page,
+        });
+      }
+
       return res.json({
         relatorios: relatorios.rows,
         total: relatorios.count,
@@ -59,7 +68,7 @@ class RelatorioPedidoController {
       const relatorio = await RelatorioPedido.findByPk(id);
 
       if (!relatorio) {
-        return res.status(404).json({ error: 'Relatório não encontrado' });
+        return res.json({});
       }
 
       return res.json(relatorio);
