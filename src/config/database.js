@@ -3,8 +3,8 @@ import { Sequelize } from 'sequelize';
 // Configurações do banco de dados
 const dbConfig = {
   dialect: 'postgres',
-  host: process.env.DB_HOST || '192.168.0.200',
-  port: process.env.PORT_BANCO || 5432,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 5432,
   username: process.env.DB_USER || 'onnmoveis',
   password: process.env.DB_PASS || 'onnmoveis',
   database: process.env.DB_NAME || 'onnmoveis',

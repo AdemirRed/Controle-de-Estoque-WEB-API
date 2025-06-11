@@ -30,6 +30,7 @@ app.use(cors({
 
 const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket
 const httpsPort = process.env.PORT_HTTPS || 2001; // Porta HTTPS
+//const httpPort = process.env.PORT || 3000; // Mudança para evitar conflito
 
 let wss;
 try {
@@ -73,12 +74,20 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// Inicia o servidor HTTPS
+const HOST = process.env.HOST || '0.0.0.0';
+
 const options = {
   key: fs.readFileSync('./certs/key.pem'),
   cert: fs.readFileSync('./certs/cert.pem'),
 };
 
-https.createServer(options, app).listen(httpsPort, () => {
+https.createServer(options, app).listen(httpsPort, HOST, () => {
   console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
 });
+
+// Remover servidor HTTP para evitar conflito de porta
+/*
+app.listen(httpPort, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${httpPort}`);
+});
+*/
