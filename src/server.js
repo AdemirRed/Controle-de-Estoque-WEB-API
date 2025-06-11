@@ -69,7 +69,7 @@ wss.on('connection', (ws, req) => {
 
   // Fecha a conexão WebSocket quando o cliente desconectar
   ws.on('close', () => {
-    //console.log('WebSocket connection closed');
+    //console.log('WebSocket connection  closed');
   });
 });
 
