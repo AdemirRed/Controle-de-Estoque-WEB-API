@@ -6,6 +6,7 @@ if (dbConfig.useUrl) {
   sequelize = new Sequelize(dbConfig.url, {
     ...dbConfig.options,
     dialectOptions: {
+      ...(dbConfig.options?.dialectOptions || {}),
       ssl: {
         require: true,
         rejectUnauthorized: false
@@ -20,6 +21,7 @@ if (dbConfig.useUrl) {
     {
       ...dbConfig,
       dialectOptions: {
+        ...(dbConfig.dialectOptions || {}),
         ssl: {
           require: true,
           rejectUnauthorized: false
