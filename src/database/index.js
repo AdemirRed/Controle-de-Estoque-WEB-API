@@ -3,13 +3,29 @@ import dbConfig from '../config/database.js';
 
 let sequelize;
 if (dbConfig.useUrl) {
-  sequelize = new Sequelize(dbConfig.url, dbConfig.options);
+  sequelize = new Sequelize(dbConfig.url, {
+    ...dbConfig.options,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
 } else {
   sequelize = new Sequelize(
     dbConfig.database,
     dbConfig.username,
     dbConfig.password,
-    dbConfig
+    {
+      ...dbConfig,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
+    }
   );
 }
 
