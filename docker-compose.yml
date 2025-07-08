@@ -3,10 +3,10 @@ version: '3.8'
 services:
   postgres:
     image: postgres
-    container_name: onnmoveis
+    container_name: estoquemaster
     environment:
-      POSTGRES_USER: onnmoveis
-      POSTGRES_PASSWORD: onnmoveis
+      POSTGRES_USER: estoquemaster
+      POSTGRES_PASSWORD: estoquemaster
     ports:
       - '5432:5432'
     restart: always

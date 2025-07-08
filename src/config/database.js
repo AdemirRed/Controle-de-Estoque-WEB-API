@@ -5,9 +5,9 @@ const dbConfig = {
   dialect: 'postgres',
   host: process.env.DB_HOST,
   port: process.env.DB_PORT || 5432,
-  username: process.env.DB_USER || 'onnmoveis',
-  password: process.env.DB_PASS || 'onnmoveis',
-  database: process.env.DB_NAME || 'onnmoveis',
+  username: process.env.DB_USER || 'estoquemaster',
+  password: process.env.DB_PASS || 'estoquemaster',
+  database: process.env.DB_NAME || 'estoquemaster',
   define: {
     timestamps: true,
     underscored: true,
