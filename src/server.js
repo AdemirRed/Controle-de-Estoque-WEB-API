@@ -85,6 +85,16 @@ https.createServer(options, app).listen(httpsPort, HOST, () => {
   console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
 });
 
+app.enable('trust proxy'); // Permite que o Express reconheça HTTPS atrás de proxy
+
+app.use((req, res, next) => {
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+    return next();
+  }
+  // Redireciona para HTTPS se não estiver seguro
+  res.redirect('https://' + req.headers.host + req.url);
+});
+
 // Remover servidor HTTP para evitar conflito de porta
 /*
 app.listen(httpPort, HOST, () => {
