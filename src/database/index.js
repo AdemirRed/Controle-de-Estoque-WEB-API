@@ -2,34 +2,20 @@ import Sequelize from 'sequelize';
 import dbConfig from '../config/database.js';
 
 let sequelize;
-if (dbConfig.useUrl) {
-  sequelize = new Sequelize(dbConfig.url, {
-    ...dbConfig.options,
+sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
+  {
+    ...dbConfig,
     dialectOptions: {
-      ...(dbConfig.options?.dialectOptions || {}),
       ssl: {
         require: true,
         rejectUnauthorized: false
       }
     }
-  });
-} else {
-  sequelize = new Sequelize(
-    dbConfig.database,
-    dbConfig.username,
-    dbConfig.password,
-    {
-      ...dbConfig,
-      dialectOptions: {
-        ...(dbConfig.dialectOptions || {}),
-        ssl: {
-          require: true,
-          rejectUnauthorized: false
-        }
-      }
-    }
-  );
-}
+  }
+);
 
 import Fornecedor from '../app/models/Fornecedor.js';
 import Item from '../app/models/Item.js';
