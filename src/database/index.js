@@ -1,12 +1,17 @@
 import Sequelize from 'sequelize';
 import dbConfig from '../config/database.js';
 
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  dbConfig
-);
+let sequelize;
+if (dbConfig.useUrl) {
+  sequelize = new Sequelize(dbConfig.url, dbConfig.options);
+} else {
+  sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    dbConfig
+  );
+}
 
 import Fornecedor from '../app/models/Fornecedor.js';
 import Item from '../app/models/Item.js';
