@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import authConfig from '../../config/auth.js';
+import User from '../models/users.js';
 
 export default async (req, res, next) => {
   try {
@@ -19,22 +20,20 @@ export default async (req, res, next) => {
 
     try {
       const decoded = await promisify(jwt.verify)(token, authConfig.secret);
-
-      // Compatibilidade com diferentes formatos de payload
-      req.userId = decoded.id || decoded.usuario_id || decoded.userId;
-      req.userRole = decoded.papel || decoded.role;
-      req.userName = decoded.nome || decoded.name;
-      req.user = decoded;
-
-      if (!req.userId) {
+      // Busca o usuário no banco para garantir papel atualizado
+      const usuario = await User.findByPk(decoded.id || decoded.usuario_id || decoded.userId);
+      if (!usuario) {
         return res.status(401).json({
           status: 'error',
           code: 'INVALID_TOKEN',
-          message: 'Token inválido - ID do usuário não encontrado',
+          message: 'Usuário não encontrado no banco',
           debug: decoded // Remover em produção
         });
       }
-
+      req.userId = usuario.id;
+      req.userRole = usuario.papel;
+      req.userName = usuario.nome;
+      req.user = usuario;
       return next();
     } catch (err) {
       return res.status(401).json({

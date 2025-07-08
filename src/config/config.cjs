@@ -19,7 +19,12 @@ module.exports = {
   production: {
     use_env_variable: 'DB_URL_EXTERNA',
     dialect: 'postgres',
-    dialectOptions: {},
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     logging: false
   }
 };

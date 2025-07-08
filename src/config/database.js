@@ -4,6 +4,12 @@ import { Sequelize } from 'sequelize';
 const dbConfig = (() => {
   // Permite usar uma URL completa se disponível
   const dbUrl = process.env.DB_URL_EXTERNA || process.env.DB_URL_INTERNA || '';
+  const sslOptions = {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  };
   if (dbUrl) {
     // Retorna a URL e as opções separadamente
     return {
@@ -11,6 +17,7 @@ const dbConfig = (() => {
       url: dbUrl,
       options: {
         dialect: 'postgres',
+        dialectOptions: sslOptions,
         define: {
           timestamps: true,
           underscored: true,
@@ -28,6 +35,7 @@ const dbConfig = (() => {
     username: process.env.DB_USER || 'estoquemaster',
     password: process.env.DB_PASS,
     database: process.env.DB_NAME || 'estoquemaster',
+    dialectOptions: sslOptions,
     define: {
       timestamps: true,
       underscored: true,
