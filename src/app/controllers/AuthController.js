@@ -35,20 +35,20 @@ class AuthController {
       }
 
       // Reseta o contador se o tempo limite passou
-      const updateData = {};
+      const updated_ata = {};
       if ((now - lastAttempt) >= RECOVERY_LIMIT_TIME) {
-        updateData.tentativas_recuperacao = 1;
+        updated_ata.tentativas_recuperacao = 1;
       } else {
-        updateData.tentativas_recuperacao = (attemptCount + 1);
+        updated_ata.tentativas_recuperacao = (attemptCount + 1);
       }
 
-      updateData.ultima_tentativa_recuperacao = now;
+      updated_ata.ultima_tentativa_recuperacao = now;
 
       const codigo = crypto.randomInt(100000, 999999).toString();
-      updateData.codigo_recuperacao = codigo;
-      updateData.codigo_recuperacao_expiracao = new Date(now.getTime() + 5 * 60 * 1000);
+      updated_ata.codigo_recuperacao = codigo;
+      updated_ata.codigo_recuperacao_expiracao = new Date(now.getTime() + 5 * 60 * 1000);
 
-      await user.update(updateData);
+      await user.update(updated_ata);
 
       try {
         await sendEmail({

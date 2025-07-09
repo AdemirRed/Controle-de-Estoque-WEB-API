@@ -55,7 +55,7 @@ class PedidoController {
             attributes: ['id', 'nome', 'sigla']
           }
         ],
-        order: [['created_at', 'DESC']] // Corrigido de createdAt para created_at
+        order: [['created_at', 'DESC']] // Corrigido de created_at para created_at
       });
 
       if (!pedidos.rows || pedidos.rows.length === 0) {
@@ -419,7 +419,7 @@ class PedidoController {
             attributes: ['id', 'nome']
           }
         ],
-        order: [['createdAt', 'DESC']]
+        order: [['created_at', 'DESC']]
       });
 
       if (!pedidos || pedidos.length === 0) {

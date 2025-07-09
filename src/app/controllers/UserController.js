@@ -68,7 +68,7 @@ class UserController {
   async index(req, res) {
     try {
       const usuarios = await User.findAll({
-        attributes: ['id', 'nome', 'email', 'createdAt', 'updatedAt'],
+        attributes: ['id', 'nome', 'email', 'created_at', 'updated_at'],
       });
       // Retorna array vazio se não houver usuários
       return res.json(usuarios || []);
