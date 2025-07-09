@@ -14,24 +14,18 @@ class App {
   }
 
   middleware() {
-    // Configuração do CORS - garantir que seja aplicada antes de qualquer outra middleware
+    // Configuração do CORS - permitir apenas universoredblack.com.br
     this.app.use(cors({
-      origin: [
-        'https://redblackspy.ddns.net:2002',
-        'https://redblackspy.ddns.net:3001', 
-        'https://inventoryctr.netlify.app',
-        'https://controle-de-estoque-web-api.onrender.com',
-        'https://universoredblack.com.br/dashboard'
-            ],
+      origin: ['https://universoredblack.com.br', 'http://universoredblack.com.br', 'https://wwwuniversoredblack.com.br'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
     }));
 
-    // Middleware que adiciona cabeçalhos CORS diretamente
+    // Middleware adicional para garantir CORS
     this.app.use((req, res, next) => {
       const origin = req.headers.origin;
-      if (origin === 'https://inventoryctr.netlify.app') {
+      if (origin && (origin === 'https://universoredblack.com.br' || origin === 'http://universoredblack.com.br')) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
