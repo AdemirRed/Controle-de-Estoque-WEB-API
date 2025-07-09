@@ -5,6 +5,7 @@ import authConfig from '../../config/auth.js';
 import User from '../models/users.js';
 
 export default async (req, res, next) => {
+  console.log(`🔍 AuthMiddleware chamado para: ${req.method} ${req.path}`);
   try {
     const authHeader = req.headers.authorization;
 

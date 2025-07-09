@@ -30,6 +30,13 @@ routes.post('/esqueci-senha', AuthController.forgotPassword); // [POST] Solicita
 routes.post('/redefinir-senha', AuthController.resetPassword); // [POST] Redefinir senha
 routes.post('/verificar-email', UserController.verifyEmail); // [POST] Verificar existência de email
 
+// Debug middleware - log todas as requisições
+routes.use((req, res, next) => {
+  console.log(`🔍 Rota chamada: ${req.method} ${req.path}`);
+  console.log(`🔍 Headers:`, req.headers);
+  next();
+});
+
 // Aplicar middleware para proteger todas as rotas abaixo:
 routes.use(authMiddleware);
 
