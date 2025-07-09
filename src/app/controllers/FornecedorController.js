@@ -5,6 +5,9 @@ class FornecedorController {
   async index(req, res) {
     try {
       const fornecedores = await Fornecedor.findAll();
+      if (!fornecedores || fornecedores.length === 0) {
+        return res.json([]);
+      }
       return res.json(fornecedores);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno do servidor' });
@@ -19,7 +22,7 @@ class FornecedorController {
       const fornecedor = await Fornecedor.findByPk(id);
 
       if (!fornecedor) {
-        return res.status(404).json({ error: 'Fornecedor não encontrado' });
+        return res.json({});
       }
 
       return res.json(fornecedor);

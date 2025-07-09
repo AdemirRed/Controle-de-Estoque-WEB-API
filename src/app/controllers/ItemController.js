@@ -11,6 +11,9 @@ class ItemController {
   async index(req, res) {
     try {
       const itens = await Item.findAll();
+      if (!itens || itens.length === 0) {
+        return res.json([]);
+      }
       return res.json(itens);
     } catch (error) {
       console.error('Erro ao buscar itens:', error);
@@ -23,7 +26,7 @@ class ItemController {
    */
   async show(req, res) {
     const item = await Item.findByPk(req.params.id);
-    if (!item) return res.status(404).json({ erro: 'Item não encontrado' });
+    if (!item) return res.json({});
     return res.json(item);
   }
 

@@ -67,7 +67,14 @@ class ItemRequestController {
   // Admin lista todas as requisições
   async index(req, res) {
     try {
+      // Verifica se o usuário é admin
+      if (req.userRole !== 'admin') {
+        return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem listar todas as requisições.' });
+      }
       const requests = await ItemRequest.findAll();
+      if (!requests || requests.length === 0) {
+        return res.json([]);
+      }
       return res.json(requests);
     } catch (error) {
       console.error('Erro em index:', error); // Adicionado log
@@ -81,7 +88,7 @@ class ItemRequestController {
       const { id } = req.params;
       const itemRequest = await ItemRequest.findByPk(id);
       if (!itemRequest) {
-        return res.status(404).json({ error: 'Requisição não encontrada.' });
+        return res.json({});
       }
       return res.json(itemRequest);
     } catch (error) {
@@ -134,6 +141,9 @@ class ItemRequestController {
     try {
       const requisitante_id = req.userId;
       const requests = await ItemRequest.findAll({ where: { requisitante_id } });
+      if (!requests || requests.length === 0) {
+        return res.json([]);
+      }
       return res.json(requests);
     } catch (error) {
       console.error('Erro em userRequests:', error); // Adicionado log

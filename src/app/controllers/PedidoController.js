@@ -58,6 +58,15 @@ class PedidoController {
         order: [['created_at', 'DESC']] // Corrigido de createdAt para created_at
       });
 
+      if (!pedidos.rows || pedidos.rows.length === 0) {
+        return res.json({
+          pedidos: [],
+          total: 0,
+          totalPages: 0,
+          currentPage: parseInt(page)
+        });
+      }
+
       return res.json({
         pedidos: pedidos.rows,
         total: pedidos.count,
@@ -110,7 +119,7 @@ class PedidoController {
       });
 
       if (!pedido) {
-        return res.status(404).json({ error: 'Pedido não encontrado' });
+        return res.json({});
       }
 
       return res.json(pedido);
@@ -412,6 +421,10 @@ class PedidoController {
         ],
         order: [['createdAt', 'DESC']]
       });
+
+      if (!pedidos || pedidos.length === 0) {
+        return res.json([]);
+      }
 
       return res.json(pedidos);
     } catch (error) {

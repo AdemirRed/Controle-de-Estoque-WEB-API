@@ -13,6 +13,9 @@ class UnidadeMedidaController {
       const unidades = await UnidadeMedida.findAll({
         order: [['nome', 'ASC']],
       });
+      if (!unidades || unidades.length === 0) {
+        return res.json([]);
+      }
       return res.json(unidades);
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao listar unidades de medida' });
@@ -28,7 +31,7 @@ class UnidadeMedidaController {
       const unidade = await UnidadeMedida.findByPk(id);
       
       if (!unidade) {
-        return res.status(404).json({ error: 'Unidade de medida não encontrada' });
+        return res.json({});
       }
 
       return res.json(unidade);

@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "name": "check-in-car-api",
-  "version": "1.0.0",
+  "name": "Controle-de-Estoque-WEB-API",
+  "version": "1.5.0",
   "description": "API para gerenciamento de acesso de veículos",
   "main": "src/server.js",
   "scripts": {

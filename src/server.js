@@ -1,13 +1,17 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Carrega variáveis do .env
+dotenv.config();
 
 import cors from 'cors';
 import fs from 'fs';
 import https from 'https';
-import { WebSocketServer } from 'ws'; // Importa WebSocketServer
-import app from './app.js'; // Importa a aplicação
+import { WebSocketServer } from 'ws';
+import app from './app.js';
 
+const HOST = process.env.HOST || '0.0.0.0';
+const HTTPS_PORT = process.env.PORT_HTTPS || 2001;
+const WS_PORT = process.env.PORT_SERVER || 2010;
 
+// Lista de domínios permitidos
 const allowedOrigins = [
   'https://redblackspy.ddns.net:2002',
   'https://redblackspy.ddns.net:3001',
@@ -15,70 +19,68 @@ const allowedOrigins = [
   'http://localhost:2002'
 ];
 
+// CORS configurado
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Não permitido pelo CORS'));
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
+    callback(new Error('Não permitido pelo CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const wsPort = process.env.PORT_SERVER || 2010; // Porta WebSocket
-const httpsPort = process.env.PORT_HTTPS || 2001; // Porta HTTPS
-
-let wss;
-try {
-  // Tenta iniciar o servidor WebSocket na porta definida
-  wss = new WebSocketServer({ port: wsPort });
-  //console.log(`WebSocket server running on port ${wsPort}`);
-} catch (error) {
-  // Se a porta já estiver em uso, loga o erro e encerra a aplicação
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${wsPort} is already in use. Please free the port or use a different one.`);
-    process.exit(1);
-  } else {
-    throw error;
+// Redirecionamento para HTTPS (caso esteja atrás de proxy)
+app.enable('trust proxy');
+app.use((req, res, next) => {
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+    return next();
   }
-}
-
-// Conexão WebSocket
-wss.on('connection', (ws, req) => {
-  const params = new URLSearchParams(req.url.split('?')[1]);
-  const token = params.get('token'); // Obtém o token passado na URL
-
-  // Validação simples do token - considere usar algo mais robusto como JWT
-  if (token !== '94mBxZoPdDgY') { // Substitua pelo token esperado ou lógica de validação mais segura
-    ws.close(1008, 'Invalid token'); // Fecha a conexão com código de política de violação
-    //console.log('WebSocket connection rejected: Invalid token');
-    return;
-  }
-
-  //console.log('WebSocket connection established');
-
-  // Ouve por mensagens recebidas no WebSocket
-  ws.on('message', () => {
-    //console.log('Received:', message);
-    ws.send('Message received');
-  });
-
-
-  // Fecha a conexão WebSocket quando o cliente desconectar
-  ws.on('close', () => {
-    //console.log('WebSocket connection closed');
-  });
+  res.redirect(`https://${req.headers.host}${req.url}`);
 });
 
-// Inicia o servidor HTTPS
-const options = {
+// Certificados SSL (use certificados válidos em produção)
+const sslOptions = {
   key: fs.readFileSync('./certs/key.pem'),
   cert: fs.readFileSync('./certs/cert.pem'),
 };
 
-https.createServer(options, app).listen(httpsPort, () => {
-  //console.log(`Servidor HTTPS rodando na porta ${httpsPort}`);
+// Servidor HTTPS
+https.createServer(sslOptions, app).listen(HTTPS_PORT, HOST, () => {
+  console.log(`✅ Servidor HTTPS rodando em https://${HOST}:${HTTPS_PORT}`);
+});
+
+// WebSocket Server
+let wss;
+try {
+  wss = new WebSocketServer({ port: WS_PORT });
+  console.log(`✅ WebSocket ativo em ws://${HOST}:${WS_PORT}`);
+} catch (err) {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Porta ${WS_PORT} em uso. Altere ou libere-a.`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
+}
+
+// Conexão WebSocket segura com token simples
+wss.on('connection', (ws, req) => {
+  const params = new URLSearchParams(req.url.split('?')[1]);
+  const token = params.get('token');
+
+  if (token !== '94mBxZoPdDgY') {
+    ws.close(1008, 'Token inválido');
+    return;
+  }
+
+  ws.on('message', () => {
+    ws.send('Mensagem recebida');
+  });
+
+  ws.on('close', () => {
+    // Conexão fechada
+  });
 });
