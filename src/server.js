@@ -22,15 +22,7 @@ if (isProduction) {
     console.log(`✅ Servidor HTTP rodando em http://${HOST}:${PORT}`);
   });
 } else {
-  // Em desenvolvimento local, use HTTPS
-  app.use((req, res, next) => {
-    if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
-      return next();
-    }
-    res.redirect(`https://${req.headers.host}${req.url}`);
-  });
-
-  // Certificados SSL (apenas para desenvolvimento)
+  // Em desenvolvimento local, use HTTPS com certificados
   const sslOptions = {
     key: fs.readFileSync('./certs/key.pem'),
     cert: fs.readFileSync('./certs/cert.pem'),
