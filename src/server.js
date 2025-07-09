@@ -9,7 +9,7 @@ import { WebSocketServer } from 'ws';
 import app from './app.js';
 
 const HOST = process.env.HOST || '0.0.0.0';
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 2001;
 const WS_PORT = process.env.PORT_SERVER || 2010;
 const isProduction = process.env.NODE_ENV === 'production';
 
