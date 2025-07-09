@@ -3,13 +3,15 @@ dotenv.config();
 
 import cors from 'cors';
 import fs from 'fs';
+import http from 'http';
 import https from 'https';
 import { WebSocketServer } from 'ws';
 import app from './app.js';
 
 const HOST = process.env.HOST || '0.0.0.0';
-const HTTPS_PORT = process.env.PORT_HTTPS || 2001;
+const PORT = process.env.PORT || 3000;
 const WS_PORT = process.env.PORT_SERVER || 2010;
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Lista de domínios permitidos
 const allowedOrigins = [
@@ -32,25 +34,34 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Redirecionamento para HTTPS (caso esteja atrás de proxy)
+// Redirecionamento para HTTPS (apenas em desenvolvimento local)
 app.enable('trust proxy');
-app.use((req, res, next) => {
-  if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
-    return next();
-  }
-  res.redirect(`https://${req.headers.host}${req.url}`);
-});
 
-// Certificados SSL (use certificados válidos em produção)
-const sslOptions = {
-  key: fs.readFileSync('./certs/key.pem'),
-  cert: fs.readFileSync('./certs/cert.pem'),
-};
+// Servidor
+if (isProduction) {
+  // Em produção (Render), use HTTP simples - o Render adiciona HTTPS automaticamente
+  http.createServer(app).listen(PORT, HOST, () => {
+    console.log(`✅ Servidor HTTP rodando em http://${HOST}:${PORT}`);
+  });
+} else {
+  // Em desenvolvimento local, use HTTPS
+  app.use((req, res, next) => {
+    if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+      return next();
+    }
+    res.redirect(`https://${req.headers.host}${req.url}`);
+  });
 
-// Servidor HTTPS
-https.createServer(sslOptions, app).listen(HTTPS_PORT, HOST, () => {
-  console.log(`✅ Servidor HTTPS rodando em https://${HOST}:${HTTPS_PORT}`);
-});
+  // Certificados SSL (apenas para desenvolvimento)
+  const sslOptions = {
+    key: fs.readFileSync('./certs/key.pem'),
+    cert: fs.readFileSync('./certs/cert.pem'),
+  };
+
+  https.createServer(sslOptions, app).listen(PORT, HOST, () => {
+    console.log(`✅ Servidor HTTPS rodando em https://${HOST}:${PORT}`);
+  });
+}
 
 // WebSocket Server
 let wss;
