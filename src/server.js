@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import cors from 'cors';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
@@ -12,27 +11,6 @@ const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 2001;
 const WS_PORT = process.env.PORT_SERVER || 2010;
 const isProduction = process.env.NODE_ENV === 'production';
-
-// Lista de domínios permitidos
-const allowedOrigins = [
-  'https://redblackspy.ddns.net:2002',
-  'https://redblackspy.ddns.net:3001',
-  'https://inventoryctr.netlify.app',
-  'http://localhost:2002'
-];
-
-// CORS configurado
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(new Error('Não permitido pelo CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
 // Redirecionamento para HTTPS (apenas em desenvolvimento local)
 app.enable('trust proxy');
