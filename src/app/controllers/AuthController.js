@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import 'dotenv/config';
+import { Op } from 'sequelize';
 import sendEmail from '../../utils/mailer.js';
 import User from '../models/users.js';
 
@@ -14,7 +15,13 @@ class AuthController {
       const { email } = req.body;
 
       // Verifica se existe usuário cadastrado com o e-mail informado antes de qualquer processamento
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ 
+        where: { 
+          email: {
+            [Op.iLike]: email
+          }
+        }
+      });
 
       if (!user) {
         // Retorna imediatamente sem tentar enviar e-mail ou processar nada
@@ -122,7 +129,13 @@ class AuthController {
     try {
       const { email, codigo, novaSenha } = req.body;
 
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ 
+        where: { 
+          email: {
+            [Op.iLike]: email
+          }
+        }
+      });
 
       if (!user) {
         return res.status(400).json({ erro: 'Código inválido ou expirado.' });

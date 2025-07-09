@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import User from '../models/users.js';
 
@@ -25,7 +26,13 @@ class UserController {
 
       const { nome, email, senha_hash, papel } = req.body;
 
-      const usuarioExiste = await User.findOne({ where: { email } });
+      const usuarioExiste = await User.findOne({ 
+        where: { 
+          email: {
+            [Op.iLike]: email
+          }
+        }
+      });
       if (usuarioExiste) {
         return res
           .status(409)
@@ -108,7 +115,13 @@ class UserController {
       }
 
       if (email && email !== usuario.email) {
-        const emailExiste = await User.findOne({ where: { email } });
+        const emailExiste = await User.findOne({ 
+          where: { 
+            email: {
+              [Op.iLike]: email
+            }
+          }
+        });
         if (emailExiste) {
           return res
             .status(409)
@@ -153,7 +166,13 @@ class UserController {
         return res.status(400).json({ erro: 'O e-mail é obrigatório.' });
       }
 
-      const usuario = await User.findOne({ where: { email } });
+      const usuario = await User.findOne({ 
+        where: { 
+          email: {
+            [Op.iLike]: email
+          }
+        }
+      });
 
       if (!usuario) {
         return res.status(404).json({ mensagem: 'E-mail não encontrado.' });

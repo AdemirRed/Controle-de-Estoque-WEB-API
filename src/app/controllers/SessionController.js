@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import authConfig from '../../config/auth.js';
 import User from '../models/users.js';
@@ -23,7 +24,11 @@ class SessionController {
       const { email, senha_hash } = req.body;
 
       const user = await User.findOne({ 
-        where: { email },
+        where: { 
+          email: {
+            [Op.iLike]: email // Case-insensitive search
+          }
+        },
         raw: false 
       });
 
