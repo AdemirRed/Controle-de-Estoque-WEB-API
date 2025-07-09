@@ -21,6 +21,8 @@ class Categoria extends Model {
       {
         sequelize,
         tableName: 'categorias',
+        timestamps: true,
+        underscored: true,
       }
     );
 

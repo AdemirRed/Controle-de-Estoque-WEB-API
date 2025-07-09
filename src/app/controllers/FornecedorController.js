@@ -33,6 +33,7 @@ class FornecedorController {
   }
 
   async store(req, res) {
+    console.log('🔍 FornecedorController.store chamado:', req.body);
     try {
       const { nome, telefone, email } = req.body;
 
@@ -40,14 +41,18 @@ class FornecedorController {
         return res.status(400).json({ error: 'Nome e telefone são obrigatórios' });
       }
 
+      console.log('🔍 Criando fornecedor com dados:', { nome, telefone, email: email || null });
+      
       const fornecedor = await Fornecedor.create({
         nome,
         telefone,
         email: email || null, // Define email como null se estiver vazio
       });
 
+      console.log('✅ Fornecedor criado:', fornecedor.toJSON());
       return res.status(201).json(fornecedor);
     } catch (error) {
+      console.error('❌ Erro detalhado ao criar fornecedor:', error);
       if (error.name === 'SequelizeValidationError') {
         return res.status(400).json({ 
           error: 'Erro de validação', 
@@ -59,7 +64,11 @@ class FornecedorController {
       }
       
       console.error('Erro ao criar fornecedor:', error);
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        details: error.message,
+        stack: error.stack
+      });
     }
   }
 
