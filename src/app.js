@@ -20,8 +20,9 @@ class App {
         'https://redblackspy.ddns.net:2002',
         'https://redblackspy.ddns.net:3001', 
         'https://inventoryctr.netlify.app',
-        'http://localhost:2002'
-      ],
+        'https://controle-de-estoque-web-api.onrender.com',
+        'https://universoredblack.com.br/dashboard'
+            ],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
