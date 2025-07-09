@@ -66,8 +66,7 @@ class Item extends Model {
         sequelize,
         tableName: 'itens',
         timestamps: true,
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        underscored: true,
       }
     );
   }

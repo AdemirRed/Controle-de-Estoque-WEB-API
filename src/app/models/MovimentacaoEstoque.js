@@ -21,8 +21,7 @@ class MovimentacaoEstoque extends Model {
         sequelize,
         tableName: 'movimentacoes_estoque',
         timestamps: true,
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        underscored: true,
       }
     );
   }

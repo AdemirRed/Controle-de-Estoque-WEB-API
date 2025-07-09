@@ -31,8 +31,7 @@ class Pedido extends Model {
         sequelize,
         tableName: 'pedidos',
         timestamps: true,
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        underscored: true,
       }
     );
 
