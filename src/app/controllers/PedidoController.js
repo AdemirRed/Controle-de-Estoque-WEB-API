@@ -403,13 +403,33 @@ class PedidoController {
    */
   async delete(req, res) {
     try {
+      console.log('🔍 PedidoController.delete - ID do pedido:', req.params.id);
+      console.log('🔍 PedidoController.delete - Usuário:', req.userId, req.userRole);
+      
       const { id } = req.params;
 
-      const pedido = await Pedido.findByPk(id);
+      // Buscar o pedido com informações do criador
+      const pedido = await Pedido.findByPk(id, {
+        include: [
+          {
+            model: Usuario,
+            as: 'criador',
+            attributes: ['id', 'nome', 'email']
+          }
+        ]
+      });
 
       if (!pedido) {
         return res.status(404).json({ error: 'Pedido não encontrado' });
       }
+
+      console.log('🔍 PedidoController.delete - Pedido encontrado:', {
+        id: pedido.id,
+        status: pedido.status,
+        criado_por: pedido.criado_por,
+        usuario_atual: req.userId,
+        papel_usuario: req.userRole
+      });
 
       // Apenas pedidos pendentes podem ser deletados
       if (pedido.status !== 'pendente') {
@@ -418,11 +438,30 @@ class PedidoController {
         });
       }
 
+      // Verificar permissões: usuário só pode deletar seus próprios pedidos, 
+      // ou admin pode deletar qualquer pedido
+      const isAdmin = req.userRole === 'admin';
+      const isOwner = pedido.criado_por === req.userId;
+
+      if (!isAdmin && !isOwner) {
+        return res.status(403).json({ 
+          error: 'Você só pode excluir seus próprios pedidos' 
+        });
+      }
+
+      console.log('🔍 PedidoController.delete - Deletando pedido...');
+      
       await pedido.destroy();
+
+      console.log('🔍 PedidoController.delete - Pedido deletado com sucesso');
 
       return res.status(204).send();
     } catch (error) {
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error('❌ Erro ao deletar pedido:', error);
+      return res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        details: error.message 
+      });
     }
   }
 
