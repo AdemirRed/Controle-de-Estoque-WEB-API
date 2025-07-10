@@ -67,6 +67,8 @@ class Item extends Model {
         tableName: 'itens',
         timestamps: true,
         underscored: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
       }
     );
   }

@@ -30,9 +30,11 @@ class Fornecedor extends Model {
       },
       {
         sequelize,
-        tableName: 'fornecedores', // Certifique-se de que o nome da tabela está correto
-        timestamps: true, // Inclui created_at e updated_at
+        tableName: 'fornecedores',
+        timestamps: true,
         underscored: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
       }
     );
 
