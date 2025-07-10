@@ -137,13 +137,16 @@ class PedidoController {
    */
   async store(req, res) {
     try {
+      console.log('🔍 PedidoController.store - Dados recebidos:', req.body);
+      
       const {
         item_id,
         item_nome,
         item_descricao,
         item_unidade_medida_id, // Alterado de item_unidade_medida para item_unidade_medida_id
         quantidade,
-        observacoes
+        observacoes,
+        fornecedor_id // Adicionado fornecedor_id
       } = req.body;
 
       // Validações básicas
@@ -176,12 +179,26 @@ class PedidoController {
       }
 
       let valor_total = null;
+      // Log para debug
+      console.log('🔍 PedidoController.store - req.userId:', req.userId);
+      console.log('🔍 PedidoController.store - req.user:', req.user);
+
       let dadosPedido = {
         quantidade,
         observacoes,
         status: 'pendente',
-        criado_por: req.usuario?.id
+        criado_por: req.userId
       };
+
+      // Adicionar fornecedor_id se fornecido
+      if (fornecedor_id) {
+        // Verificar se o fornecedor existe
+        const fornecedor = await Fornecedor.findByPk(fornecedor_id);
+        if (!fornecedor) {
+          return res.status(404).json({ error: 'Fornecedor não encontrado' });
+        }
+        dadosPedido.fornecedor_id = fornecedor_id;
+      }
 
       // Se for um item cadastrado
       if (item_id) {
@@ -206,7 +223,11 @@ class PedidoController {
         };
       }
 
+      console.log('🔍 PedidoController.store - Dados finais do pedido:', dadosPedido);
+
       const pedido = await Pedido.create(dadosPedido);
+
+      console.log('🔍 PedidoController.store - Pedido criado:', pedido.toJSON());
 
       // Retornar pedido criado
       const pedidoCompleto = await Pedido.findByPk(pedido.id, {
@@ -215,6 +236,15 @@ class PedidoController {
             model: Item,
             attributes: ['id', 'nome', 'descricao', 'preco'] // Alterado de preco_unitario para preco
           }] : []),
+          {
+            model: Fornecedor,
+            attributes: ['id', 'nome', 'email', 'telefone']
+          },
+          {
+            model: Usuario,
+            as: 'criador',
+            attributes: ['id', 'nome', 'email']
+          },
           {
             model: UnidadeMedida,
             as: 'unidade_medida',
@@ -255,6 +285,9 @@ class PedidoController {
    */
   async update(req, res) {
     try {
+      console.log('🔍 PedidoController.update - Dados recebidos:', req.body);
+      console.log('🔍 PedidoController.update - req.userId:', req.userId);
+      
       const { id } = req.params;
       const { 
         quantidade, 
