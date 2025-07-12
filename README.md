@@ -101,7 +101,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
     # Ou usando NPM
     npm run dev
     ```
-    *   A API estará disponível em `http://localhost:PORT` (a porta definida no seu `.env`, padrão 3333).
+    *   A API estará disponível em `https://localhost:PORT` (a porta definida no seu `.env`, padrão 3333).
 
 *   **Modo de Produção:**
     1.  **Compile o código TypeScript para JavaScript:**

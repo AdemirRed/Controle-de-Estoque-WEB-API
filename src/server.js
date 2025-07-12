@@ -19,7 +19,7 @@ app.enable('trust proxy');
 if (isProduction) {
   // Em produção (Render), use HTTP simples - o Render adiciona HTTPS automaticamente
   http.createServer(app).listen(PORT, HOST, () => {
-    console.log(`✅ Servidor HTTP rodando em http://${HOST}:${PORT}`);
+    console.log(`✅ Servidor HTTP rodando em https://${HOST}:${PORT}`);
   });
 } else {
   // Em desenvolvimento local, use HTTPS com certificados

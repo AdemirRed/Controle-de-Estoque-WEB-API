@@ -16,7 +16,7 @@ class App {
   middleware() {
     // Configuração do CORS - permitir apenas universoredblack.com.br
     this.app.use(cors({
-      origin: ['https://universoredblack.com.br', 'http://universoredblack.com.br', 'https://wwwuniversoredblack.com.br'],
+      origin: ['https://universoredblack.com.br', 'https://universoredblack.com.br', 'https://wwwuniversoredblack.com.br'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
@@ -25,7 +25,7 @@ class App {
     // Middleware adicional para garantir CORS
     this.app.use((req, res, next) => {
       const origin = req.headers.origin;
-      if (origin && (origin === 'https://universoredblack.com.br' || origin === 'http://universoredblack.com.br')) {
+      if (origin && (origin === 'https://universoredblack.com.br' || origin === 'https://universoredblack.com.br')) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
